@@ -144,6 +144,13 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EBO.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Libs\include\imgui\imgui.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Libs\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="Solar.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -163,6 +170,15 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EBO.h" />
+    <ClInclude Include="Libs\include\imgui\imconfig.h" />
+    <ClInclude Include="Libs\include\imgui\imgui.h" />
+    <ClInclude Include="Libs\include\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Libs\include\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Libs\include\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Libs\include\imgui\imgui_internal.h" />
+    <ClInclude Include="Libs\include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Libs\include\imgui\imstb_textedit.h" />
+    <ClInclude Include="Libs\include\imgui\imstb_truetype.h" />
     <ClInclude Include="Libs\include\json.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="Libs\include\stb\stb_image.h" />

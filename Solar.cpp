@@ -1,4 +1,7 @@
-﻿
+﻿#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include <stdio.h>
 #include<filesystem>
 namespace fs = std::filesystem;
 #define PI 3.1415f
@@ -20,8 +23,8 @@ namespace fs = std::filesystem;
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 
-const int N = 50;
-const int K = 12;
+const int N = 100;
+const int K = 100;
 
 GLfloat spherevertices[(K*N + 2) * 11];
 
@@ -64,24 +67,29 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 		for (int i = 0; i < N; i++)
 		{
 			float x, y, z;
-			z = radius*(sin(j * PI / K)) * sin(2 * PI * i / ((float)N));
-			x = radius * (sin(j * PI / K)) * cos(2 * PI * i / ((float)N));
-			y = radius * cos(j * PI / K);
-
+			float phi = 2 * PI * i / ((float)(N-1));
+			float theta= j * PI / (K-1);
+			z = radius*(sin(theta)) * sin(phi);
+			x = radius * (sin(theta)) * cos(phi);
+			y = radius * cos(theta);
+			glm::vec3 pos(x, y, z);
+			glm::vec3 normal = glm::normalize(pos);
+			glm::vec2 texCoordinate(phi / (2.0f * PI), (PI - theta) / PI);
+			// VERTEX POSITION
 			vertices[(N * j + i) * (11)] = x;
 			vertices[(N * j + i) * (11) + 1] = y;
 			vertices[(N * j + i) * (11) + 2] = z;
-
-			vertices[(N * j + i) * (11) + 3] = x;
-			vertices[(N * j + i) * (11) + 4] = y;
-			vertices[(N * j + i) * (11) + 5] = z;
-
-			vertices[(N * j + i) * (11) + 6] = x;
-			vertices[(N * j + i) * (11) + 7] = y;
-
-			vertices[(N * j + i) * (11) + 8] = x;
-			vertices[(N * j + i) * (11) + 9] = y;
-			vertices[(N * j + i) * (11) + 10] = z;
+			// raw color
+			vertices[(N * j + i) * (11) + 3] = 0;
+			vertices[(N * j + i) * (11) + 4] = 0;
+			vertices[(N * j + i) * (11) + 5] = 0;
+			//TEXTURE COORDINATES
+			vertices[(N * j + i) * (11) + 6] = texCoordinate.x;
+			vertices[(N * j + i) * (11) + 7] = texCoordinate.y;
+			//NORMAL
+			vertices[(N * j + i) * (11) + 8] = normal.x;
+			vertices[(N * j + i) * (11) + 9] = normal.y;
+			vertices[(N * j + i) * (11) + 10] = normal.z;
 		}
 
 
@@ -91,11 +99,14 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 	vertices[(K * N + 0) * 11 + 3] = 0.5f;
 	vertices[(K * N + 0) * 11 + 4] = 0.5f;
 	vertices[(K * N + 0) * 11 + 5] = 1.0f;
+
 	vertices[(K * N + 0) * 11 + 6] = 0.5f;
-	vertices[(K * N + 0) * 11 + 7] = 0.0f;
+	vertices[(K * N + 0) * 11 + 7] = 1.0f;
+
 	vertices[(K * N + 0) * 11 + 8] = 1;
 	vertices[(K * N + 0) * 11 + 9] = 0;
 	vertices[(K * N + 0) * 11 + 10] = 1.0f;
+
 
 	vertices[(K * N + 1) * 11 + 0] = 0;
 	vertices[(K * N + 1) * 11 + 1] = -1*radius;
@@ -103,8 +114,10 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 	vertices[(K * N + 1) * 11 + 3] = 0.5f;
 	vertices[(K * N + 1) * 11 + 4] = 0.5f;
 	vertices[(K * N + 1) * 11 + 5] = 1.0f;
+
 	vertices[(K * N + 1) * 11 + 6] = 0.5f;
 	vertices[(K * N + 1) * 11 + 7] = 0.0f;
+
 	vertices[(K * N + 1) * 11 + 8] = 1;
 	vertices[(K * N + 1) * 11 + 9] = 0;
 	vertices[(K * N + 1) * 11 + 10] = 1.0f;
@@ -150,7 +163,6 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 }
 
 
-
 int main()
 {
 	GenerateSphere(spherevertices, sphereindices, 1.0f);
@@ -162,7 +174,7 @@ int main()
 	GenerateSphere(saturnvertices, saturnindices, 3.0f);
 	GenerateSphere(uranusvertices, uranusindices, 2.5f);
 	GenerateSphere(neptunevertices, neptuneindices, 2.0f);
-
+	
 
 	float sunradius = 3.0f;
 
@@ -461,10 +473,32 @@ int main()
 	double prevFrame = glfwGetTime();
 	double currentFrame = glfwGetTime();
 
+	// Setup imgui
+	const char* glsl_version = "#version 420";
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if(camera.cursorHidden)
+			ImGui::SetMouseCursor(ImGuiMouseCursor_None);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 1000.0f);
@@ -479,13 +513,13 @@ int main()
 		prevFrame = currentFrame;
 
 		alpha += deltaTime * PI;
-		float earthPosX = rads[3] * sin(alpha);
-		float earthPosZ = rads[3] * cos(alpha);
+		float earthPosX = rads[2] * sin(alpha);
+		float earthPosZ = rads[2] * cos(alpha);
 
 		earthPos = glm::vec3(earthPosX, 0.0f, earthPosZ);
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
-		
+	
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		camera.Matrix(shaderProgram, "camMatrix");
@@ -599,16 +633,52 @@ int main()
 		MoonVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(moonindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-		lightShader.Activate();
-		camera.Matrix(lightShader, "camMatrix");
-		lightVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(sunindices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
+
+			lightShader.Activate();
+			camera.Matrix(lightShader, "camMatrix");
+			lightVAO.Bind();
+			glDrawElements(GL_TRIANGLES, sizeof(sunindices) / sizeof(int), GL_UNSIGNED_INT, 0);
+
+
+		
+		{
+			static float f = 0.0f;
+			static int counter = 0;
+			static ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove;
+			bool t = true;
+			ImGui::Begin("Hello, world!", &t, flags);                          // Create a window called "Hello, world!" and append into it.
+
+			//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+			//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			//ImGui::Checkbox("Another Window", &show_another_window);
+
+			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+			//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+			//	counter++;
+			//ImGui::SameLine();
+			//ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::SetWindowPos(ImVec2(0,880));
+			ImGui::SetWindowSize(ImVec2(1920, 200));
+			
+			ImGui::End();
+		}
+
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	VAO1.Delete();
 	VBO1.Delete();

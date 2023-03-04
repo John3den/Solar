@@ -1,8 +1,1 @@
-﻿  Solar.cpp
-D:\VisualStudio\VC\Tools\MSVC\14.35.32215\include\filesystem(13): warning STL4038: The contents of <filesystem> are available only with C++17 or later.
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(3,21): error C3083: experimental: символ слева от "::" должен представлять тип
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(3,35): error C3083: filesystem: символ слева от "::" должен представлять тип
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(3,47): error C2039: "v1": не является членом "std".
-C:\Users\JohnEden\Source\Repos\Solar\predefined C++ types (compiler internal)(343,11): message : см. объявление "std"
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(3,49): error C2878: v1: пространство имен или класс с таким именем не существует
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(477,19): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+﻿
