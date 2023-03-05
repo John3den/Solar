@@ -166,6 +166,10 @@
     <None Include="shaders\default.geom" />
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
+    <None Include="shaders\SimpleLighting.frag" />
+    <None Include="shaders\SimpleLighting.vert" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />

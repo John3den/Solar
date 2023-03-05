@@ -37,5 +37,5 @@ void main()
 	// Assigns the texture coordinates from the Vertex Data to "texCoord"
 	texCoord = aTex;
 	// Assigns the normal from the Vertex Data to "Normal"
-	Normal = aNormal;
+	Normal = vec3(model*vec4(aNormal,0.0f));
 }

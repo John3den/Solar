@@ -54,10 +54,8 @@ GLuint uranusindices[(2 * N * (K - 1) + 2 * N) * 3];
 GLfloat neptunevertices[(K * N + 2) * 11];
 GLuint neptuneindices[(2 * N * (K - 1) + 2 * N) * 3];
 
-GLfloat sunvertices[(K * N + 2) * 3];
-
+GLfloat sunvertices[(K * N + 2) * 11];
 GLuint sunindices[(2 * N * (K - 1) + 2 * N) * 3];
-
 
 
 
@@ -162,6 +160,40 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 	}
 }
 
+float skyboxVertices[] =
+{
+	//   Coordinates
+	-1.0f, -1.0f,  1.0f,//        7--------6
+	 1.0f, -1.0f,  1.0f,//       /|       /|
+	 1.0f, -1.0f, -1.0f,//      4--------5 |
+	-1.0f, -1.0f, -1.0f,//      | |      | |
+	-1.0f,  1.0f,  1.0f,//      | 3------|-2
+	 1.0f,  1.0f,  1.0f,//      |/       |/
+	 1.0f,  1.0f, -1.0f,//      0--------1
+	-1.0f,  1.0f, -1.0f
+};
+
+unsigned int skyboxIndices[] =
+{
+	// Right
+	1, 2, 6,
+	6, 5, 1,
+	// Left
+	0, 4, 7,
+	7, 3, 0,
+	// Top
+	4, 5, 6,
+	6, 7, 4,
+	// Bottom
+	0, 3, 2,
+	2, 1, 0,
+	// Back
+	0, 1, 5,
+	5, 4, 0,
+	// Front
+	3, 7, 6,
+	6, 2, 3
+};
 
 int main()
 {
@@ -174,73 +206,7 @@ int main()
 	GenerateSphere(saturnvertices, saturnindices, 3.0f);
 	GenerateSphere(uranusvertices, uranusindices, 2.5f);
 	GenerateSphere(neptunevertices, neptuneindices, 2.0f);
-	
-
-	float sunradius = 3.0f;
-
-	for (int j = 0; j < K; j++)
-		for (int i = 0; i < N; i++)
-		{
-			float x, y, z;
-			z = sunradius*(sin(j * PI / K)) * sin(2 * PI * i / ((float)N));
-			x = sunradius * (sin(j * PI / K)) * cos(2 * PI * i / ((float)N));
-			y = sunradius * cos(j * PI / K);
-
-			sunvertices[(N * j + i) * (3)] = x;
-			sunvertices[(N * j + i) * (3) + 1] = y;
-			sunvertices[(N * j + i) * (3) + 2] = z;
-
-		}
-
-
-	sunvertices[(K * N + 0) * 3 + 0] = 0;
-	sunvertices[(K * N + 0) * 3 + 1] = sunradius * 1;
-	sunvertices[(K * N + 0) * 3 + 2] = 0;
-	sunvertices[(K * N + 1) * 3 + 0] = 0;
-	sunvertices[(K * N + 1) * 3 + 1] = -1* sunradius;
-	sunvertices[(K * N + 1) * 3 + 2] = 0;
-
-
-
-
-	for (int i = 0; i < N; i++)
-	{
-		sunindices[(2 * N * (K - 1) + i) * 3 + 0] = (K * N + 0);
-		sunindices[(2 * N * (K - 1) + i) * 3 + 1] = i;
-		sunindices[(2 * N * (K - 1) + i) * 3 + 2] = i + 1;
-	}
-
-	sunindices[(2 * N * (K - 1) + N - 1) * 3 + 2] = 0;
-
-	for (int i = N; i < N * 2; i++)
-	{
-		sunindices[(2 * N * (K - 1) + i) * 3 + 0] = (K * N + 1);
-		sunindices[(2 * N * (K - 1) + i) * 3 + 1] = (K - 2) * N + i;
-		sunindices[(2 * N * (K - 1) + i) * 3 + 2] = (K - 2) * N + i + 1;
-	}
-
-	sunindices[(2 * N * (K - 1) + 2 * N - 1) * 3 + 2] = (K - 1) * N;
-
-
-
-	for (int j = 0; j < K - 1; j++)
-	{
-		for (int k = 0; k < N; k++)
-		{
-			sunindices[(j * N + k) * 6 + 0] = (j * N) + k;
-			sunindices[(j * N + k) * 6 + 1] = (j * N) + k + 1;
-			sunindices[(j * N + k) * 6 + 2] = (j * N) + k + N;
-
-			sunindices[(j * N + k) * 6 + 3] = (j * N) + k + 1;
-			sunindices[(j * N + k) * 6 + 4] = (j * N) + k + N;
-			sunindices[(j * N + k) * 6 + 5] = (j * N) + k + N + 1;
-		}
-		sunindices[(j * N + N - 1) * 6 + 3] = (j * N);
-		sunindices[(j * N + N - 1) * 6 + 4] = (j * N) + N;
-		sunindices[(j * N + N - 1) * 6 + 5] = (j * N) + N - 1;
-	}
-
-
+	GenerateSphere(sunvertices, sunindices, 5.0f);
 
 
 
@@ -250,6 +216,8 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+
 
 	GLFWwindow* window = glfwCreateWindow(width, height, "Solar", NULL, NULL);
 	if (window == NULL)
@@ -264,7 +232,7 @@ int main()
 	glViewport(0, 0, width, height);
 
 
-
+	Shader simpleLighting("shaders/SimpleLighting.vert", "shaders/SimpleLighting.frag");
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
 	VAO VAO1;
 	VAO1.Bind();
@@ -367,7 +335,6 @@ int main()
 	uranusVBO.Unbind();
 	uranusEBO.Unbind();
 
-
 	VAO neptuneVAO;
 	neptuneVAO.Bind();
 	VBO neptuneVBO(neptunevertices, sizeof(neptunevertices));
@@ -383,14 +350,17 @@ int main()
 
 
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
-	VAO lightVAO;
-	lightVAO.Bind();
-	VBO lightVBO(sunvertices, sizeof(sunvertices));
-	EBO lightEBO(sunindices, sizeof(sunindices));
-	lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-	lightVAO.Unbind();
-	lightVBO.Unbind();
-	lightEBO.Unbind();
+	VAO sunVAO;
+	sunVAO.Bind();
+	VBO sunVBO(sunvertices, sizeof(sunvertices));
+	EBO sunEBO(sunindices, sizeof(sunindices));
+	sunVAO.LinkAttrib(sunVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+	sunVAO.LinkAttrib(sunVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+	sunVAO.LinkAttrib(sunVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+	sunVAO.LinkAttrib(sunVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	sunVAO.Unbind();
+	sunVAO.Unbind();
+	sunVAO.Unbind();
 
 
 
@@ -408,18 +378,41 @@ int main()
 
 
 	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
-	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	shaderProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-		
+	simpleLighting.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	Shader skyboxShader("Shaders/skybox.vert", "Shaders/skybox.frag");
+	skyboxShader.Activate();
+	
 
 
 
+	std::string texPath = "Textures/sun.png";
 
-	std::string texPath = "Textures/earth.png";
+	Texture suntex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	suntex.texUnit(shaderProgram, "tex0", 0);
+
+
+	// debug
+
+
+	texPath = "Textures/SkyXP.png";
+
+	Texture skytex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	skytex.texUnit(shaderProgram, "skybox", 0);
+
+
+
+	texPath = "Textures/earth.png";
 
 	Texture earthtex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	earthtex.texUnit(shaderProgram, "tex0", 0);
@@ -473,6 +466,8 @@ int main()
 	double prevFrame = glfwGetTime();
 	double currentFrame = glfwGetTime();
 
+	
+
 	// Setup imgui
 	const char* glsl_version = "#version 420";
 	IMGUI_CHECKVERSION();
@@ -483,10 +478,48 @@ int main()
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
+	io.FontGlobalScale = 2;
 
 	bool show_demo_window = true;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+	int lightingType = 0;
+
+
+
+	// Create VAO, VBO, and EBO for the skybox
+	unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glGenBuffers(1, &skyboxEBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), &skyboxIndices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	// Creates the cubemap texture object
+	unsigned int cubemapTexture;
+	glGenTextures(1, &cubemapTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	// These are very important to prevent seams
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+
+
+
+
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -503,23 +536,36 @@ int main()
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 1000.0f);
 
-		
-		shaderProgram.Activate();
+		switch (lightingType)
+		{
+		case 0:
+			shaderProgram.Activate();
+			break;
+		case 1:
+			simpleLighting.Activate();
+			break;
+		default:
+			shaderProgram.Activate();
+			break;
+		}
+
 
 		currentFrame = glfwGetTime();
 
 		float deltaTime = (currentFrame - prevFrame)/4;
 		float rads[8] = {10, 15, 20, 40, 60 , 70 , 90, 110};
 		prevFrame = currentFrame;
-
+		//debug
+		//deltaTime = 0;
 		alpha += deltaTime * PI;
-		float earthPosX = rads[2] * sin(alpha);
+		float earthPosX = rads[2] * sin(alpha);	
 		float earthPosZ = rads[2] * cos(alpha);
 
 		earthPos = glm::vec3(earthPosX, 0.0f, earthPosZ);
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
-	
+		earthModel = glm::rotate(earthModel, alpha*1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
+
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		camera.Matrix(shaderProgram, "camMatrix");
@@ -528,6 +574,7 @@ int main()
 		glDrawElements(GL_TRIANGLES, sizeof(sphereindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 
+		
 
 		earthPos = glm::vec3(earthPosX + 3*sin(alpha*2), 0.0f, cos(alpha*2)*3 + earthPosZ);
 		earthModel = glm::mat4(1.0f);
@@ -545,6 +592,7 @@ int main()
 		earthPos = glm::vec3(rads[0]*sin(alpha*2), 0.0f, rads[0]*cos(alpha*2));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -556,6 +604,7 @@ int main()
 		earthPos = glm::vec3(rads[1] * sin(alpha * 3), 0.0f, rads[1] * cos(alpha * 3));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -567,6 +616,7 @@ int main()
 		earthPos = glm::vec3(rads[3] * sin(alpha * 1.5f), 0.0f, rads[3] * cos(alpha * 1.5f));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -575,20 +625,24 @@ int main()
 		marsVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(marsindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
+
 		earthPos = glm::vec3(rads[4] * sin(alpha * 0.9f), 0.0f, rads[4] * cos(alpha * 0.9f));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
+		glUniformMatrix4fv(glGetUniformLocation(simpleLighting.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+		glUniform3f(glGetUniformLocation(simpleLighting.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		camera.Matrix(simpleLighting, "camMatrix");
 		jupitertex.Bind();
 		jupiterVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(jupiterindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
+
 		earthPos = glm::vec3(rads[5] * sin(alpha * 0.75f), 0.0f, rads[5] * cos(alpha * 0.75f));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -600,6 +654,7 @@ int main()
 		earthPos = glm::vec3(rads[6] * sin(alpha * 0.6f), 0.0f, rads[6] * cos(alpha * 0.6f));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -608,9 +663,13 @@ int main()
 		uranusVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(uranusindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
+
+		
+
 		earthPos = glm::vec3(rads[7] * sin(alpha * 0.4f), 0.0f, rads[7] * cos(alpha * 0.4f));
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
@@ -618,30 +677,44 @@ int main()
 		neptunetex.Bind();
 		neptuneVAO.Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(neptuneindices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		
+		lightShader.Activate();
 
-
-
-
-		earthPos = glm::vec3(earthPosX + 3 * sin(alpha * 2), 0.0f, cos(alpha * 2) * 3 + earthPosZ);
+		earthPos = glm::vec3(0,0,0);
 		earthModel = glm::mat4(1.0f);
 		earthModel = glm::translate(earthModel, earthPos);
+		earthModel = glm::rotate(earthModel, alpha/4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		moontex.Bind();
-		MoonVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(moonindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-
-
-			lightShader.Activate();
-			camera.Matrix(lightShader, "camMatrix");
-			lightVAO.Bind();
-			glDrawElements(GL_TRIANGLES, sizeof(sunindices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+		glUniform3f(glGetUniformLocation(lightShader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		camera.Matrix(lightShader, "camMatrix");
+		suntex.Bind();
+		sunVAO.Bind();
+		glDrawElements(GL_TRIANGLES, sizeof(sunindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 
-		
+
+
+
+
+
+		//Skybox rendering
+		glDepthFunc(GL_LEQUAL);
+		skyboxShader.Activate();
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
+		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		skytex.Bind();
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS);
+
+		//UI rendering
 		{
 			static float f = 0.0f;
 			static int counter = 0;
@@ -656,8 +729,10 @@ int main()
 			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-			//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			//	counter++;
+			if (ImGui::Button("Change Lighting Mode", ImVec2(300,100)))                     // Buttons return true when clicked (most widgets return true when edited/activated)
+			{
+				lightingType = (lightingType + 1) % 2;
+			}
 			//ImGui::SameLine();
 			//ImGui::Text("counter = %d", counter);
 
@@ -683,13 +758,12 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
+	skytex.Delete();
 	earthtex.Delete();
 	moontex.Delete();
 	shaderProgram.Delete();
-	lightVAO.Delete();
-	lightVBO.Delete();
-	lightEBO.Delete();
 	lightShader.Delete();
+	simpleLighting.Delete();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
