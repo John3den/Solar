@@ -1,1 +1,16 @@
-﻿
+﻿  Camera.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  Solar.cpp
+D:\VisualStudio\VC\Tools\MSVC\14.35.32215\include\filesystem(13): warning STL4038: The contents of <filesystem> are available only with C++17 or later.
+C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(6,21): error C2039: "filesystem": не является членом "std".
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22000.0\ucrt\stddef.h(23,15): message : см. объявление "std"
+C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(6,31): error C2878: filesystem: пространство имен или класс с таким именем не существует
+C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(557,19): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+  Texture.cpp
+  Создание кода...

@@ -161,9 +161,6 @@
   <ItemGroup>
     <None Include="shaders\light.vert" />
     <None Include="shaders\light.frag" />
-    <None Include="shaders\framebuffer.vert" />
-    <None Include="shaders\framebuffer.frag" />
-    <None Include="shaders\default.geom" />
     <None Include="shaders\default.frag" />
     <None Include="shaders\default.vert" />
     <None Include="shaders\SimpleLighting.frag" />

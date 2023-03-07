@@ -1,3 +1,4 @@
 ﻿  Solar.cpp
-C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(555,19): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(321,23): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+C:\Users\JohnEden\Source\Repos\Solar\Solar.cpp(364,19): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
   Solar.vcxproj -> C:\Users\JohnEden\Source\Repos\Solar\Debug\Solar.exe

@@ -12,29 +12,27 @@ in vec2 texCoord;
 in vec3 Normal;
 // Imports the current position from the Vertex Shader
 in vec3 crntPos;
+in vec3 camPosition;
+in vec3 lightPosition;
 
 // Gets the Texture Unit from the main function
 uniform sampler2D tex0;
+uniform sampler2D normal0;
 // Gets the color of the light from the main function
 uniform vec4 lightColor;
-// Gets the position of the light from the main function
-uniform vec3 lightPos;
-// Gets the position of the camera from the main function
-uniform vec3 camPos;
+
 
 void main()
 {
 	// ambient lighting
 	float ambient = 0.20f;
-
-	// diffuse lighting
-	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightPos - crntPos);
+	vec3 normal = normalize(texture(normal0, texCoord).xyz * 2.0f - 1.0f);
+	vec3 lightDirection = normalize(lightPosition - crntPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
 	// specular lighting
 	float specularLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - crntPos);
+	vec3 viewDirection = normalize(camPosition - crntPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 8);
 	float specular = specAmount * specularLight;

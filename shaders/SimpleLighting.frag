@@ -25,7 +25,7 @@ uniform vec3 camPos;
 void main()
 {
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightPos - crntPos);
+	vec3 lightDirection = normalize(vec3(0,0,0) - crntPos);
 
 	// outputs final color
 	FragColor = texture(tex0, texCoord) * max(dot(normal,lightDirection),0.2f);

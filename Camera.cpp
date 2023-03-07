@@ -1,5 +1,5 @@
 #include"Camera.h"
-#define SPEEDMODIFIER 0.01f
+
 
 
 Camera::Camera(int width, int height, glm::vec3 position)
@@ -7,6 +7,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	Camera::width = width;
 	Camera::height = height;
 	Position = position;
+	cursorHidden = false;
 }
 
 void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)

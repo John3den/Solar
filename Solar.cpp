@@ -26,36 +26,25 @@ const unsigned int height = 1080;
 const int N = 100;
 const int K = 100;
 
-GLfloat spherevertices[(K*N + 2) * 11];
+class Orbit
+{
+public:
+	float a=1, b=1;
+	float orbitingSpeed=1;
+	float GetOrbitX(float angle)
+	{
+		return a*sin(angle * orbitingSpeed);
+	}
+	float GetOrbitZ(float angle)
+	{
+		return b*cos(angle * orbitingSpeed);
+	}
+};
 
-GLuint sphereindices[(2*N*(K-1) + 2 * N) * 3];
-
-GLfloat moonvertices[(K * N + 2) * 11];
-GLuint moonindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat venusvertices[(K * N + 2) * 11];
-GLuint venusindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat marsvertices[(K * N + 2) * 11];
-GLuint marsindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat mercuryvertices[(K * N + 2) * 11];
-GLuint mercuryindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat jupitervertices[(K * N + 2) * 11];
-GLuint jupiterindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat saturnvertices[(K * N + 2) * 11];
-GLuint saturnindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat uranusvertices[(K * N + 2) * 11];
-GLuint uranusindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat neptunevertices[(K * N + 2) * 11];
-GLuint neptuneindices[(2 * N * (K - 1) + 2 * N) * 3];
-
-GLfloat sunvertices[(K * N + 2) * 11];
-GLuint sunindices[(2 * N * (K - 1) + 2 * N) * 3];
+// 0 - earth; 1 - moon; 2 - venus; 3 - mars; 4 - mercury; 5 - jupiter; 6 - saturn; 7 - uranus; 8 - neptune; 9 - sun
+GLfloat BodyVertices[10][K * N * 17];
+GLuint BodyIndices[10][(2 * N * (K - 1)) * 3];
+float BodyRadii[10] = { 1, 0.4f, 1.3f, 1.4f, 1.5f, 1.7f, 2.0f, 1.9f, 1.0f, 2.0f };
 
 
 
@@ -67,81 +56,38 @@ void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
 			float x, y, z;
 			float phi = 2 * PI * i / ((float)(N-1));
 			float theta= j * PI / (K-1);
-			z = radius*(sin(theta)) * sin(phi);
+
 			x = radius * (sin(theta)) * cos(phi);
 			y = radius * cos(theta);
+			z = radius * (sin(theta)) * sin(phi);
+
 			glm::vec3 pos(x, y, z);
 			glm::vec3 normal = glm::normalize(pos);
 			glm::vec2 texCoordinate(phi / (2.0f * PI), (PI - theta) / PI);
 			// VERTEX POSITION
-			vertices[(N * j + i) * (11)] = x;
-			vertices[(N * j + i) * (11) + 1] = y;
-			vertices[(N * j + i) * (11) + 2] = z;
+			vertices[(N * j + i) * (17)] = x;
+			vertices[(N * j + i) * (17) + 1] = y;
+			vertices[(N * j + i) * (17) + 2] = z;
 			// raw color
-			vertices[(N * j + i) * (11) + 3] = 0;
-			vertices[(N * j + i) * (11) + 4] = 0;
-			vertices[(N * j + i) * (11) + 5] = 0;
+			vertices[(N * j + i) * (17) + 3] = 0;
+			vertices[(N * j + i) * (17) + 4] = 0;
+			vertices[(N * j + i) * (17) + 5] = 0;
 			//TEXTURE COORDINATES
-			vertices[(N * j + i) * (11) + 6] = texCoordinate.x;
-			vertices[(N * j + i) * (11) + 7] = texCoordinate.y;
+			vertices[(N * j + i) * (17) + 6] = texCoordinate.x;
+			vertices[(N * j + i) * (17) + 7] = texCoordinate.y;
 			//NORMAL
-			vertices[(N * j + i) * (11) + 8] = normal.x;
-			vertices[(N * j + i) * (11) + 9] = normal.y;
-			vertices[(N * j + i) * (11) + 10] = normal.z;
+			vertices[(N * j + i) * (17) + 8] = normal.x;
+			vertices[(N * j + i) * (17) + 9] = normal.y;
+			vertices[(N * j + i) * (17) + 10] = normal.z;
+			//TANGENT
+			vertices[(N * j + i) * (17) + 11] = -sin(theta)*cos(phi);
+			vertices[(N * j + i) * (17) + 12] = 0;
+			vertices[(N * j + i) * (17) + 13] = sin(theta)*cos(phi);
+			//BITANGENT
+			vertices[(N * j + i) * (17) + 14] = cos(theta)*cos(phi);
+			vertices[(N * j + i) * (17) + 15] = -sin(theta);
+			vertices[(N * j + i) * (17) + 16] = cos(theta)*sin(phi);
 		}
-
-
-	vertices[(K * N + 0) * 11 + 0] = 0;
-	vertices[(K * N + 0) * 11 + 1] = radius * 1;
-	vertices[(K * N + 0) * 11 + 2] = 0;
-	vertices[(K * N + 0) * 11 + 3] = 0.5f;
-	vertices[(K * N + 0) * 11 + 4] = 0.5f;
-	vertices[(K * N + 0) * 11 + 5] = 1.0f;
-
-	vertices[(K * N + 0) * 11 + 6] = 0.5f;
-	vertices[(K * N + 0) * 11 + 7] = 1.0f;
-
-	vertices[(K * N + 0) * 11 + 8] = 1;
-	vertices[(K * N + 0) * 11 + 9] = 0;
-	vertices[(K * N + 0) * 11 + 10] = 1.0f;
-
-
-	vertices[(K * N + 1) * 11 + 0] = 0;
-	vertices[(K * N + 1) * 11 + 1] = -1*radius;
-	vertices[(K * N + 1) * 11 + 2] = 0;
-	vertices[(K * N + 1) * 11 + 3] = 0.5f;
-	vertices[(K * N + 1) * 11 + 4] = 0.5f;
-	vertices[(K * N + 1) * 11 + 5] = 1.0f;
-
-	vertices[(K * N + 1) * 11 + 6] = 0.5f;
-	vertices[(K * N + 1) * 11 + 7] = 0.0f;
-
-	vertices[(K * N + 1) * 11 + 8] = 1;
-	vertices[(K * N + 1) * 11 + 9] = 0;
-	vertices[(K * N + 1) * 11 + 10] = 1.0f;
-
-
-
-	for (int i = 0; i < N; i++)
-	{
-		indices[(2 * N * (K - 1) + i) * 3 + 0] = (K * N + 0);
-		indices[(2 * N * (K - 1) + i) * 3 + 1] = i;
-		indices[(2 * N * (K - 1) + i) * 3 + 2] = i + 1;
-	}
-
-	indices[(2 * N * (K - 1) + N - 1) * 3 + 2] = 0;
-
-	for (int i = N; i < N * 2; i++)
-	{
-		indices[(2 * N * (K - 1) + i) * 3 + 0] = (K * N + 1);
-		indices[(2 * N * (K - 1) + i) * 3 + 1] = (K - 2) * N + i;
-		indices[(2 * N * (K - 1) + i) * 3 + 2] = (K - 2) * N + i + 1;
-	}
-
-	indices[(2 * N * (K - 1) + 2 * N - 1) * 3 + 2] = (K - 1) * N;
-
-
-
 	for (int j = 0; j < K - 1; j++)
 	{
 		for (int k = 0; k < N; k++)
@@ -197,22 +143,12 @@ unsigned int skyboxIndices[] =
 
 int main()
 {
-	GenerateSphere(spherevertices, sphereindices, 1.0f);
-	GenerateSphere(moonvertices, moonindices,0.5f);
-	GenerateSphere(mercuryvertices, mercuryindices, 0.3f);
-	GenerateSphere(venusvertices, venusindices, 0.9f);
-	GenerateSphere(marsvertices, marsindices, 0.8f);
-	GenerateSphere(jupitervertices, jupiterindices, 3.3f);
-	GenerateSphere(saturnvertices, saturnindices, 3.0f);
-	GenerateSphere(uranusvertices, uranusindices, 2.5f);
-	GenerateSphere(neptunevertices, neptuneindices, 2.0f);
-	GenerateSphere(sunvertices, sunindices, 5.0f);
-
-
+	for (int i = 0; i < 10; i++)
+	{
+		GenerateSphere(BodyVertices[i], BodyIndices[i], BodyRadii[i]);
+	}
 
 	glfwInit();
-
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -234,229 +170,92 @@ int main()
 
 	Shader simpleLighting("shaders/SimpleLighting.vert", "shaders/SimpleLighting.frag");
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
-	VAO VAO1;
-	VAO1.Bind();
-	VBO VBO1(spherevertices, sizeof(spherevertices));
-	EBO EBO1(sphereindices, sizeof(sphereindices));
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	VAO1.Unbind();
-	VBO1.Unbind();
-	EBO1.Unbind();
 
 
+	VAO vao[10];
+	VBO vbo[10];
+	EBO ebo[10];
+	for (int i = 0; i < 10; i++)
+	{
+		vao[i] = VAO();
+		vao[i].Bind();
+		vbo[i] = VBO(BodyVertices[i], sizeof(BodyVertices[i]));
+		ebo[i] = EBO(BodyIndices[i], sizeof(BodyIndices[i]));
+		vao[i].LinkAttrib(vbo[i], 0, 3, GL_FLOAT, 17 * sizeof(float), (void*)0);
+		vao[i].LinkAttrib(vbo[i], 1, 3, GL_FLOAT, 17 * sizeof(float), (void*)(3 * sizeof(float)));
+		vao[i].LinkAttrib(vbo[i], 2, 2, GL_FLOAT, 17 * sizeof(float), (void*)(6 * sizeof(float)));
+		vao[i].LinkAttrib(vbo[i], 3, 3, GL_FLOAT, 17 * sizeof(float), (void*)(8 * sizeof(float)));
+		vao[i].LinkAttrib(vbo[i], 4, 3, GL_FLOAT, 17 * sizeof(float), (void*)(11 * sizeof(float)));
+		vao[i].LinkAttrib(vbo[i], 5, 3, GL_FLOAT, 17 * sizeof(float), (void*)(14 * sizeof(float)));
+		vao[i].Unbind();
+		vbo[i].Unbind();
+		ebo[i].Unbind();
 
-
-	VAO MoonVAO;
-	MoonVAO.Bind();
-	VBO MoonVBO(moonvertices, sizeof(moonvertices));
-	EBO MoonEBO(moonindices, sizeof(moonindices));
-	MoonVAO.LinkAttrib(MoonVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	MoonVAO.LinkAttrib(MoonVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	MoonVAO.LinkAttrib(MoonVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	MoonVAO.LinkAttrib(MoonVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	MoonVAO.Unbind();
-	MoonVBO.Unbind();
-	MoonEBO.Unbind();
-
-	VAO mercuryVAO;
-	mercuryVAO.Bind();
-	VBO mercuryVBO(mercuryvertices, sizeof(mercuryvertices));
-	EBO mercuryEBO(mercuryindices, sizeof(mercuryindices));
-	mercuryVAO.LinkAttrib(mercuryVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	mercuryVAO.LinkAttrib(mercuryVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	mercuryVAO.LinkAttrib(mercuryVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	mercuryVAO.LinkAttrib(mercuryVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	mercuryVAO.Unbind();
-	mercuryVBO.Unbind();
-	mercuryEBO.Unbind();
-
-	VAO venusVAO;
-	venusVAO.Bind();
-	VBO venusVBO(venusvertices, sizeof(venusvertices));
-	EBO venusEBO(venusindices, sizeof(venusindices));
-	venusVAO.LinkAttrib(venusVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	venusVAO.LinkAttrib(venusVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	venusVAO.LinkAttrib(venusVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	venusVAO.LinkAttrib(venusVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	venusVAO.Unbind();
-	venusVBO.Unbind();
-	venusEBO.Unbind();
-
-
-	VAO marsVAO;
-	marsVAO.Bind();
-	VBO marsVBO(marsvertices, sizeof(marsvertices));
-	EBO marsEBO(marsindices, sizeof(marsindices));
-	marsVAO.LinkAttrib(marsVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	marsVAO.LinkAttrib(marsVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	marsVAO.LinkAttrib(marsVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	marsVAO.LinkAttrib(marsVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	marsVAO.Unbind();
-	marsVBO.Unbind();
-	marsEBO.Unbind();
-
-	VAO jupiterVAO;
-	jupiterVAO.Bind();
-	VBO jupiterVBO(jupitervertices, sizeof(jupitervertices));
-	EBO jupiterEBO(jupiterindices, sizeof(jupiterindices));
-	jupiterVAO.LinkAttrib(jupiterVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	jupiterVAO.LinkAttrib(jupiterVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	jupiterVAO.LinkAttrib(jupiterVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	jupiterVAO.LinkAttrib(jupiterVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	jupiterVAO.Unbind();
-	jupiterVBO.Unbind();
-	jupiterEBO.Unbind();
-
-	VAO saturnVAO;
-	saturnVAO.Bind();
-	VBO saturnVBO(saturnvertices, sizeof(saturnvertices));
-	EBO saturnEBO(saturnindices, sizeof(saturnindices));
-	saturnVAO.LinkAttrib(saturnVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	saturnVAO.LinkAttrib(saturnVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	saturnVAO.LinkAttrib(saturnVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	saturnVAO.LinkAttrib(saturnVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	saturnVAO.Unbind();
-	saturnVBO.Unbind();
-	saturnEBO.Unbind();
-
-
-	VAO uranusVAO;
-	uranusVAO.Bind();
-	VBO uranusVBO(uranusvertices, sizeof(uranusvertices));
-	EBO uranusEBO(uranusindices, sizeof(uranusindices));
-	uranusVAO.LinkAttrib(uranusVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	uranusVAO.LinkAttrib(uranusVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	uranusVAO.LinkAttrib(uranusVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	uranusVAO.LinkAttrib(uranusVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	uranusVAO.Unbind();
-	uranusVBO.Unbind();
-	uranusEBO.Unbind();
-
-	VAO neptuneVAO;
-	neptuneVAO.Bind();
-	VBO neptuneVBO(neptunevertices, sizeof(neptunevertices));
-	EBO neptuneEBO(neptuneindices, sizeof(neptuneindices));
-	neptuneVAO.LinkAttrib(neptuneVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	neptuneVAO.LinkAttrib(neptuneVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	neptuneVAO.LinkAttrib(neptuneVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	neptuneVAO.LinkAttrib(neptuneVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	neptuneVAO.Unbind();
-	neptuneVBO.Unbind();
-	neptuneEBO.Unbind();
-
+	}
 
 
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
-	VAO sunVAO;
-	sunVAO.Bind();
-	VBO sunVBO(sunvertices, sizeof(sunvertices));
-	EBO sunEBO(sunindices, sizeof(sunindices));
-	sunVAO.LinkAttrib(sunVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	sunVAO.LinkAttrib(sunVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	sunVAO.LinkAttrib(sunVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	sunVAO.LinkAttrib(sunVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
-	sunVAO.Unbind();
-	sunVAO.Unbind();
-	sunVAO.Unbind();
-
-
-
-
+	Shader skyboxShader("Shaders/skybox.vert", "Shaders/skybox.frag");
 
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 0.8f, 0.5f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0f, -1.5f, 0.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 earthPos = glm::vec3(0.0f, 0.0f, 10.0f);
-	glm::mat4 earthModel = glm::mat4(1.0f);
-	earthModel = glm::translate(earthModel, earthPos);
+	glm::vec3 planetPosition = glm::vec3(0.0f, 0.0f, 10.0f);
+	glm::mat4 planetModel = glm::mat4(1.0f);
+	planetModel = glm::translate(planetModel, planetPosition);
 
 
 	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	simpleLighting.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-	Shader skyboxShader("Shaders/skybox.vert", "Shaders/skybox.frag");
 	skyboxShader.Activate();
 	
-
-
-
-	std::string texPath = "Textures/sun.png";
-
-	Texture suntex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	suntex.texUnit(shaderProgram, "tex0", 0);
-
-
-	// debug
-
-
-	texPath = "Textures/SkyXP.png";
+	std::string names[] =
+	{
+		"earth" ,"moon","venus","mars", "mercury", "jupiter",  "saturn", "uranus", "neptune", "sun"
+	};
+	
+	std::string texPath = "Textures/SkyXP.png";
 
 	Texture skytex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	skytex.texUnit(shaderProgram, "skybox", 0);
 
+	Texture* Textures;
+	Textures = (Texture*)malloc(10 * sizeof(Texture));
+
+	for (int i = 0; i < 10; i++)
+	{
+		texPath = "Textures/" + names[i] + ".png";
+		Textures[i] = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		Textures[i].texUnit(shaderProgram, "tex0", 0);
+	}
+
+	Texture* normalMaps;
+	normalMaps = (Texture*)malloc(9 * sizeof(Texture));
 
 
-	texPath = "Textures/earth.png";
-
-	Texture earthtex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	earthtex.texUnit(shaderProgram, "tex0", 0);
-
-
-	texPath = "Textures/moon.png";
-
-	Texture moontex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	moontex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/venus.png";
-
-	Texture venustex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	venustex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/mercury.png";
-
-	Texture mercurytex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	mercurytex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/mars.png";
-
-	Texture marstex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	marstex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/jupiter.png";
-
-	Texture jupitertex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	jupitertex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/saturn.png";
-
-	Texture saturntex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	saturntex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/uranus.png";
-
-	Texture uranustex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	uranustex.texUnit(shaderProgram, "tex0", 0);
-
-	texPath = "Textures/neptune.png";
-
-	Texture neptunetex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	neptunetex.texUnit(shaderProgram, "tex0", 0);
+	for (int i = 0; i < 9; i++)
+	{
+		texPath = "NormalMaps/" + names[i] + ".png";
+		if (i >= 6)
+		{
+			texPath = "NormalMaps/default.png";
+		}
+		normalMaps[i] = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		normalMaps[i].texUnit(shaderProgram, "normal0", 1);
+	}
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -510,16 +309,26 @@ int main()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	// These are very important to prevent seams
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+	Orbit orbits[10];
 
+	for (int i = 0; i < 9; i++)
+	{
+		orbits[i].a = 13.0f + (i*2+1)*5.0f*(i/3.0f + 2.0f*sin(i/7.0f))/10.0f;
+		orbits[i].b = 10.0f + (i*2+1)*(3.0f)*(i*log10(i+1) + 1)/10.0f;
+		orbits[i].orbitingSpeed = 0.5f*(1+sin(i/3.0f));
+	}
 
+	orbits[1].a = 3;
+	orbits[1].b = 3;
+	orbits[1].orbitingSpeed = 2.0f;
 
-
-
+	orbits[9].a = 0;
+	orbits[9].b = 0;
+	orbits[9].orbitingSpeed = 0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -555,145 +364,48 @@ int main()
 		float deltaTime = (currentFrame - prevFrame)/4;
 		float rads[8] = {10, 15, 20, 40, 60 , 70 , 90, 110};
 		prevFrame = currentFrame;
-		//debug
-		//deltaTime = 0;
 		alpha += deltaTime * PI;
-		float earthPosX = rads[2] * sin(alpha);	
-		float earthPosZ = rads[2] * cos(alpha);
-
-		earthPos = glm::vec3(earthPosX, 0.0f, earthPosZ);
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha*1.5f, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		earthtex.Bind();
-		VAO1.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(sphereindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-
 		
 
-		earthPos = glm::vec3(earthPosX + 3*sin(alpha*2), 0.0f, cos(alpha*2)*3 + earthPosZ);
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		moontex.Bind();
-		MoonVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(moonindices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
 
-		
-		earthPos = glm::vec3(rads[0]*sin(alpha*2), 0.0f, rads[0]*cos(alpha*2));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
+		//Render planets
+		for (int i = 0; i < 9; i++)
+		{
+			if (i != 1)
+				planetPosition = glm::vec3(orbits[i].GetOrbitX(alpha + i * PI / 9.0f), 0.0f, orbits[i].GetOrbitZ(alpha + i * PI / 9.0f));
+			else
+				planetPosition = glm::vec3(orbits[0].GetOrbitX(alpha ) + orbits[i].GetOrbitX(alpha ), 0.0f, orbits[0].GetOrbitZ(alpha) + orbits[i].GetOrbitZ(alpha));
+			planetModel = glm::mat4(1.0f);
+			planetModel = glm::translate(planetModel, planetPosition);
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		mercurytex.Bind();
-		mercuryVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(mercuryindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-		earthPos = glm::vec3(rads[1] * sin(alpha * 3), 0.0f, rads[1] * cos(alpha * 3));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		venustex.Bind();
-		venusVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(venusindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-		earthPos = glm::vec3(rads[3] * sin(alpha * 1.5f), 0.0f, rads[3] * cos(alpha * 1.5f));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		marstex.Bind();
-		marsVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(marsindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-
-		earthPos = glm::vec3(rads[4] * sin(alpha * 0.9f), 0.0f, rads[4] * cos(alpha * 0.9f));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(simpleLighting.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(simpleLighting.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(simpleLighting, "camMatrix");
-		jupitertex.Bind();
-		jupiterVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(jupiterindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-
-		earthPos = glm::vec3(rads[5] * sin(alpha * 0.75f), 0.0f, rads[5] * cos(alpha * 0.75f));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		saturntex.Bind();
-		saturnVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(saturnindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-		earthPos = glm::vec3(rads[6] * sin(alpha * 0.6f), 0.0f, rads[6] * cos(alpha * 0.6f));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		uranustex.Bind();
-		uranusVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(uranusindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-
-		
-
-		earthPos = glm::vec3(rads[7] * sin(alpha * 0.4f), 0.0f, rads[7] * cos(alpha * 0.4f));
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(shaderProgram, "camMatrix");
-		neptunetex.Bind();
-		neptuneVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(neptuneindices) / sizeof(int), GL_UNSIGNED_INT, 0);
-		
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+			glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), 0, 0, 0);
+			camera.Matrix(shaderProgram, "camMatrix");
+			glActiveTexture(GL_TEXTURE0 + 0);
+			Textures[i].Bind();
+			glActiveTexture(GL_TEXTURE0 + 1);
+			normalMaps[i].Bind();
+			vao[i].Bind();
+			glDrawElements(GL_TRIANGLES, sizeof(BodyIndices[i]) / sizeof(int), GL_UNSIGNED_INT, 0);
+		}
+		//render Sun
 		lightShader.Activate();
 
-		earthPos = glm::vec3(0,0,0);
-		earthModel = glm::mat4(1.0f);
-		earthModel = glm::translate(earthModel, earthPos);
-		earthModel = glm::rotate(earthModel, alpha/4.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		planetPosition = glm::vec3(orbits[9].GetOrbitX(alpha), 0.0f, orbits[9].GetOrbitZ(alpha));
+		planetModel = glm::mat4(1.0f);
+		planetModel = glm::translate(planetModel, planetPosition);
 
-		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(earthModel));
-		glUniform3f(glGetUniformLocation(lightShader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		camera.Matrix(lightShader, "camMatrix");
-		suntex.Bind();
-		sunVAO.Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(sunindices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		camera.Matrix(shaderProgram, "camMatrix");
+		glActiveTexture(GL_TEXTURE0 + 0);
+		Textures[9].Bind();
+		vao[9].Bind();
+		glDrawElements(GL_TRIANGLES, sizeof(BodyIndices[9]) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-
-
+	
 
 
 
@@ -720,23 +432,12 @@ int main()
 			static int counter = 0;
 			static ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove;
 			bool t = true;
-			ImGui::Begin("Hello, world!", &t, flags);                          // Create a window called "Hello, world!" and append into it.
-
-			//ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-			//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-			//ImGui::Checkbox("Another Window", &show_another_window);
-
-			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-			if (ImGui::Button("Change Lighting Mode", ImVec2(300,100)))                     // Buttons return true when clicked (most widgets return true when edited/activated)
+			ImGui::Begin("Hello, world!", &t, flags);                          
+			if (ImGui::Button("Change Lighting Mode", ImVec2(300,100)))                     
 			{
 				lightingType = (lightingType + 1) % 2;
 			}
-			//ImGui::SameLine();
-			//ImGui::Text("counter = %d", counter);
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Text(lightingType == 0 ? "Phong lighting" : "Simple lighting");
 			ImGui::SetWindowPos(ImVec2(0,880));
 			ImGui::SetWindowSize(ImVec2(1920, 200));
 			
@@ -755,12 +456,14 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	VAO1.Delete();
-	VBO1.Delete();
-	EBO1.Delete();
+	for (int i = 0; i < 10; i++)
+	{
+		vao[i].Delete();
+		vbo[i].Delete();
+		ebo[i].Delete();
+		Textures[i].Delete();
+	}
 	skytex.Delete();
-	earthtex.Delete();
-	moontex.Delete();
 	shaderProgram.Delete();
 	lightShader.Delete();
 	simpleLighting.Delete();
