@@ -1,19 +1,14 @@
-#ifndef VAO_CLASS_H
-#define VAO_CLASS_H
+#pragma once
 
 #include<glad/glad.h>
 #include"VBO.h"
 
-class VAO
+class VAO : public OpenglBuffer
 {
 public:
-	GLuint ID;
 	VAO();
-
 	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 	void Bind();
 	void Unbind();
 	void Delete();
 };
-
-#endif

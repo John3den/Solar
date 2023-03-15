@@ -1,17 +1,13 @@
-#ifndef VBO_CLASS_H
-#define VBO_CLASS_H
+#pragma once
 
-#include<glad/glad.h>
+#include <glad/glad.h>
+#include "OpenglBuffer.h"
 
-class VBO
+class VBO : public OpenglBuffer
 {
 public:
-	GLuint ID;
 	VBO(GLfloat* vertices, GLsizeiptr size);
-	VBO();
 	void Bind();
 	void Unbind();
 	void Delete();
 };
-
-#endif

@@ -1,17 +1,13 @@
-#ifndef EBO_CLASS_H
-#define EBO_CLASS_H
+#pragma once
+#include <glad/glad.h>
 
-#include<glad/glad.h>
+#include "OpenglBuffer.h"
 
-class EBO
+class EBO : public OpenglBuffer
 {
 public:
-	GLuint ID;
 	EBO(GLuint* indices, GLsizeiptr size);
-	EBO();
 	void Bind();
 	void Unbind();
 	void Delete();
 };
-
-#endif

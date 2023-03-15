@@ -1,5 +1,4 @@
-#ifndef CAMERA_CLASS_H
-#define CAMERA_CLASS_H
+#pragma once
 
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
@@ -14,26 +13,26 @@
 class Camera
 {
 public:
-	glm::vec3 Position;
-	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::mat4 cameraMatrix = glm::mat4(1.0f);
-
-	bool firstClick = true;
-
-	int width;
-	int height;
-
-	float speed = 0.1f;
-	float sensitivity = 100.0f;
-
 	Camera(int width, int height, glm::vec3 position);
-
 	void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
 	void Matrix(Shader& shader, const char* uniform);
 	void Inputs(GLFWwindow* window);
 
-public:
+	bool IsCursorHidden();
+	glm::vec3 GetOrientation();
+	glm::vec3 GetDirectionUp();
+	glm::vec3 GetPosition();
+private:
+	const int width;
+	const int height;
+	const float defaultSpeed = 0.1f;
+	const float SprintSpeed = 0.4f;
+	float speed = defaultSpeed;
+	float sensitivity = 100.0f;
+	bool firstClick = true;
 	bool cursorHidden;
+	const glm::vec3 Up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 Position;
+	glm::vec3 Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::mat4 cameraMatrix = glm::mat4(1.0f);
 };
-#endif	

@@ -2,109 +2,48 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include <stdio.h>
-#include<filesystem>
-namespace fs = std::filesystem;
-#define PI 3.1415f
-#include<iostream>
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-#include<stb/stb_image.h>
-#include<glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_ptr.hpp>
+#include <filesystem>
+#include <iostream>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
-#include"Texture.h"
-#include"shaderClass.h"
-#include"VAO.h"
-#include"VBO.h"
-#include"EBO.h"
-#include"Camera.h"
+#include "Texture.h"
+#include "shaderClass.h"
+#include "VAO.h"
+#include "VBO.h"
+#include "EBO.h"
+#include "Camera.h"
+#include "Orbit.h"
+#include "Geometry.h"
+
+#define PI 3.1415f
+
+namespace fs = std::filesystem;
+
+std::vector<VAO> vao;
+std::vector<VBO> vbo;
+std::vector<EBO> ebo;
+
 
 const unsigned int width = 1920;
 const unsigned int height = 1080;
 
-const int N = 100;
-const int K = 100;
+enum {earth, moon, venus, mars, merucury, jupiter, saturn, uranus, neptune, sun};
 
-class Orbit
-{
-public:
-	float a=1, b=1;
-	float orbitingSpeed=1;
-	float GetOrbitX(float angle)
-	{
-		return a*sin(angle * orbitingSpeed);
-	}
-	float GetOrbitZ(float angle)
-	{
-		return b*cos(angle * orbitingSpeed);
-	}
-};
-
-// 0 - earth; 1 - moon; 2 - venus; 3 - mars; 4 - mercury; 5 - jupiter; 6 - saturn; 7 - uranus; 8 - neptune; 9 - sun
-GLfloat BodyVertices[10][K * N * 17];
-GLuint BodyIndices[10][(2 * N * (K - 1)) * 3];
+GLfloat BodyVertices[10][GEOMETRY_RESOLUTION * GEOMETRY_RESOLUTION * 17];
+GLuint BodyIndices[10][(2 * GEOMETRY_RESOLUTION * (GEOMETRY_RESOLUTION - 1)) * 3];
 float BodyRadii[10] = { 1, 0.4f, 1.3f, 1.4f, 1.5f, 1.7f, 2.0f, 1.9f, 1.0f, 2.0f };
 
+std::vector<Texture> textures;
+std::vector<Texture> normalMaps;
 
 
-void GenerateSphere(GLfloat* vertices, GLuint* indices, float radius)
-{
-	for (int j = 0; j < K; j++)
-		for (int i = 0; i < N; i++)
-		{
-			float x, y, z;
-			float phi = 2 * PI * i / ((float)(N-1));
-			float theta= j * PI / (K-1);
 
-			x = radius * (sin(theta)) * cos(phi);
-			y = radius * cos(theta);
-			z = radius * (sin(theta)) * sin(phi);
-
-			glm::vec3 pos(x, y, z);
-			glm::vec3 normal = glm::normalize(pos);
-			glm::vec2 texCoordinate(phi / (2.0f * PI), (PI - theta) / PI);
-			// VERTEX POSITION
-			vertices[(N * j + i) * (17)] = x;
-			vertices[(N * j + i) * (17) + 1] = y;
-			vertices[(N * j + i) * (17) + 2] = z;
-			// raw color
-			vertices[(N * j + i) * (17) + 3] = 0;
-			vertices[(N * j + i) * (17) + 4] = 0;
-			vertices[(N * j + i) * (17) + 5] = 0;
-			//TEXTURE COORDINATES
-			vertices[(N * j + i) * (17) + 6] = texCoordinate.x;
-			vertices[(N * j + i) * (17) + 7] = texCoordinate.y;
-			//NORMAL
-			vertices[(N * j + i) * (17) + 8] = normal.x;
-			vertices[(N * j + i) * (17) + 9] = normal.y;
-			vertices[(N * j + i) * (17) + 10] = normal.z;
-			//TANGENT
-			vertices[(N * j + i) * (17) + 11] = -sin(theta)*cos(phi);
-			vertices[(N * j + i) * (17) + 12] = 0;
-			vertices[(N * j + i) * (17) + 13] = sin(theta)*cos(phi);
-			//BITANGENT
-			vertices[(N * j + i) * (17) + 14] = cos(theta)*cos(phi);
-			vertices[(N * j + i) * (17) + 15] = -sin(theta);
-			vertices[(N * j + i) * (17) + 16] = cos(theta)*sin(phi);
-		}
-	for (int j = 0; j < K - 1; j++)
-	{
-		for (int k = 0; k < N; k++)
-		{
-			indices[(j * N + k) * 6 + 0] = (j * N) + k;
-			indices[(j * N + k) * 6 + 1] = (j * N) + k + 1;
-			indices[(j * N + k) * 6 + 2] = (j * N) + k + N;
-
-			indices[(j * N + k) * 6 + 3] = (j * N) + k + 1;
-			indices[(j * N + k) * 6 + 4] = (j * N) + k + N;
-			indices[(j * N + k) * 6 + 5] = (j * N) + k + N + 1;
-		}
-		indices[(j * N + N - 1) * 6 + 3] = (j * N);
-		indices[(j * N + N - 1) * 6 + 4] = (j * N) + N;
-		indices[(j * N + N - 1) * 6 + 5] = (j * N) + N - 1;
-	}
-}
 
 float skyboxVertices[] =
 {
@@ -141,6 +80,30 @@ unsigned int skyboxIndices[] =
 	6, 2, 3
 };
 
+
+void InitializeModels()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		VAO tempvao = VAO();
+		tempvao.Bind();
+		VBO tempvbo = VBO(BodyVertices[i], sizeof(BodyVertices[i]));
+		EBO tempebo = EBO(BodyIndices[i], sizeof(BodyIndices[i]));
+		tempvao.LinkAttrib(tempvbo, 0, 3, GL_FLOAT, 17 * sizeof(float), (void*)0);
+		tempvao.LinkAttrib(tempvbo, 1, 3, GL_FLOAT, 17 * sizeof(float), (void*)(3 * sizeof(float)));
+		tempvao.LinkAttrib(tempvbo, 2, 2, GL_FLOAT, 17 * sizeof(float), (void*)(6 * sizeof(float)));
+		tempvao.LinkAttrib(tempvbo, 3, 3, GL_FLOAT, 17 * sizeof(float), (void*)(8 * sizeof(float)));
+		tempvao.LinkAttrib(tempvbo, 4, 3, GL_FLOAT, 17 * sizeof(float), (void*)(11 * sizeof(float)));
+		tempvao.LinkAttrib(tempvbo, 5, 3, GL_FLOAT, 17 * sizeof(float), (void*)(14 * sizeof(float)));
+		tempvao.Unbind();
+		tempvbo.Unbind();
+		tempebo.Unbind();
+		vao.push_back(tempvao);
+		vbo.push_back(tempvbo);
+		ebo.push_back(tempebo);
+	}
+}
+
 int main()
 {
 	for (int i = 0; i < 10; i++)
@@ -170,32 +133,12 @@ int main()
 
 	Shader simpleLighting("shaders/SimpleLighting.vert", "shaders/SimpleLighting.frag");
 	Shader shaderProgram("shaders/default.vert", "shaders/default.frag");
-
-
-	VAO vao[10];
-	VBO vbo[10];
-	EBO ebo[10];
-	for (int i = 0; i < 10; i++)
-	{
-		vao[i] = VAO();
-		vao[i].Bind();
-		vbo[i] = VBO(BodyVertices[i], sizeof(BodyVertices[i]));
-		ebo[i] = EBO(BodyIndices[i], sizeof(BodyIndices[i]));
-		vao[i].LinkAttrib(vbo[i], 0, 3, GL_FLOAT, 17 * sizeof(float), (void*)0);
-		vao[i].LinkAttrib(vbo[i], 1, 3, GL_FLOAT, 17 * sizeof(float), (void*)(3 * sizeof(float)));
-		vao[i].LinkAttrib(vbo[i], 2, 2, GL_FLOAT, 17 * sizeof(float), (void*)(6 * sizeof(float)));
-		vao[i].LinkAttrib(vbo[i], 3, 3, GL_FLOAT, 17 * sizeof(float), (void*)(8 * sizeof(float)));
-		vao[i].LinkAttrib(vbo[i], 4, 3, GL_FLOAT, 17 * sizeof(float), (void*)(11 * sizeof(float)));
-		vao[i].LinkAttrib(vbo[i], 5, 3, GL_FLOAT, 17 * sizeof(float), (void*)(14 * sizeof(float)));
-		vao[i].Unbind();
-		vbo[i].Unbind();
-		ebo[i].Unbind();
-
-	}
-
-
 	Shader lightShader("shaders/light.vert", "shaders/light.frag");
 	Shader skyboxShader("Shaders/skybox.vert", "Shaders/skybox.frag");
+
+	InitializeModels();
+
+
 
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 0.8f, 0.5f, 1.0f);
@@ -209,17 +152,17 @@ int main()
 
 
 	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.GetID(), "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.GetID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.GetID(), "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.GetID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	simpleLighting.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.GetID(), "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+	glUniform4f(glGetUniformLocation(shaderProgram.GetID(), "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	skyboxShader.Activate();
 	
 	std::string names[] =
@@ -230,31 +173,26 @@ int main()
 	std::string texPath = "Textures/SkyXP.png";
 
 	Texture skytex(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-	skytex.texUnit(shaderProgram, "skybox", 0);
+	skytex.TexUnit(shaderProgram, "skybox", 0);
 
-	Texture* Textures;
-	Textures = (Texture*)malloc(10 * sizeof(Texture));
 
 	for (int i = 0; i < 10; i++)
 	{
 		texPath = "Textures/" + names[i] + ".png";
-		Textures[i] = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-		Textures[i].texUnit(shaderProgram, "tex0", 0);
-	}
-
-	Texture* normalMaps;
-	normalMaps = (Texture*)malloc(9 * sizeof(Texture));
-
-
-	for (int i = 0; i < 9; i++)
-	{
-		texPath = "NormalMaps/" + names[i] + ".png";
-		if (i >= 6)
+		Texture temp = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+		temp.TexUnit(shaderProgram, "tex0", 0);
+		textures.push_back(temp);
+		if (i < 9)
 		{
-			texPath = "NormalMaps/default.png";
+			texPath = "NormalMaps/" + names[i] + ".png";
+			if (i >= 6)
+			{
+				texPath = "NormalMaps/default.png";
+			}
+			Texture map = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+			map.TexUnit(shaderProgram, "normal0", 1);
+			normalMaps.push_back(map);
 		}
-		normalMaps[i] = Texture(texPath.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
-		normalMaps[i].texUnit(shaderProgram, "normal0", 1);
 	}
 
 
@@ -313,29 +251,36 @@ int main()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	Orbit orbits[10];
+	std::vector<Orbit> orbits;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		orbits[i].a = 13.0f + (i*2+1)*5.0f*(i/3.0f + 2.0f*sin(i/7.0f))/10.0f;
-		orbits[i].b = 10.0f + (i*2+1)*(3.0f)*(i*log10(i+1) + 1)/10.0f;
-		orbits[i].orbitingSpeed = 0.5f*(1+sin(i/3.0f));
+		float a,b,orbitingSpeed;
+		if (i == moon)
+		{
+			a = 3;
+			b = 3;
+			orbitingSpeed = 2.0f;
+		}
+		if (i == sun)
+		{
+			a = b = orbitingSpeed = 0;
+		}
+		else
+		{
+			a = 13.0f + (i * 2 + 1) * 5.0f * (i / 3.0f + 2.0f * sin(i / 7.0f)) / 10.0f;
+			b = 10.0f + (i * 2 + 1) * (3.0f) * (i * log10(i + 1) + 1) / 10.0f;
+			orbitingSpeed = 0.5f * (1 + sin(i / 3.0f));
+		}
+		orbits.push_back(Orbit(a, b, orbitingSpeed));
 	}
-
-	orbits[1].a = 3;
-	orbits[1].b = 3;
-	orbits[1].orbitingSpeed = 2.0f;
-
-	orbits[9].a = 0;
-	orbits[9].b = 0;
-	orbits[9].orbitingSpeed = 0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if(camera.cursorHidden)
+		if(camera.IsCursorHidden())
 			ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -357,7 +302,7 @@ int main()
 			shaderProgram.Activate();
 			break;
 		}
-
+		
 
 		currentFrame = glfwGetTime();
 
@@ -365,26 +310,23 @@ int main()
 		float rads[8] = {10, 15, 20, 40, 60 , 70 , 90, 110};
 		prevFrame = currentFrame;
 		alpha += deltaTime * PI;
-		
-
-
 
 		//Render planets
 		for (int i = 0; i < 9; i++)
 		{
 			if (i != 1)
-				planetPosition = glm::vec3(orbits[i].GetOrbitX(alpha + i * PI / 9.0f), 0.0f, orbits[i].GetOrbitZ(alpha + i * PI / 9.0f));
+				planetPosition = glm::vec3(orbits[i].GetPosition(alpha + i * PI / 9.0f).x, 0.0f, orbits[i].GetPosition(alpha + i * PI / 9.0f).y);
 			else
-				planetPosition = glm::vec3(orbits[0].GetOrbitX(alpha ) + orbits[i].GetOrbitX(alpha ), 0.0f, orbits[0].GetOrbitZ(alpha) + orbits[i].GetOrbitZ(alpha));
+				planetPosition = glm::vec3(orbits[0].GetPosition(alpha ).x + orbits[i].GetPosition(alpha ).x, 0.0f, orbits[0].GetPosition(alpha).y + orbits[i].GetPosition(alpha).y);
 			planetModel = glm::mat4(1.0f);
 			planetModel = glm::translate(planetModel, planetPosition);
 
-			glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
-			glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-			glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), 0, 0, 0);
+			glUniformMatrix4fv(glGetUniformLocation(shaderProgram.GetID(), "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+			glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "camPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
+			glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "lightPos"), 0, 0, 0);
 			camera.Matrix(shaderProgram, "camMatrix");
 			glActiveTexture(GL_TEXTURE0 + 0);
-			Textures[i].Bind();
+			textures[i].Bind();
 			glActiveTexture(GL_TEXTURE0 + 1);
 			normalMaps[i].Bind();
 			vao[i].Bind();
@@ -393,32 +335,28 @@ int main()
 		//render Sun
 		lightShader.Activate();
 
-		planetPosition = glm::vec3(orbits[9].GetOrbitX(alpha), 0.0f, orbits[9].GetOrbitZ(alpha));
+		planetPosition = glm::vec3(orbits[sun].GetPosition(alpha).x, 0.0f, orbits[sun].GetPosition(alpha).y);
 		planetModel = glm::mat4(1.0f);
 		planetModel = glm::translate(planetModel, planetPosition);
+		planetModel = glm::rotate(planetModel, alpha, glm::vec3(0, 1, 0));
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.GetID(), "model"), 1, GL_FALSE, glm::value_ptr(planetModel));
+		glUniform3f(glGetUniformLocation(shaderProgram.GetID(), "camPos"), camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 		camera.Matrix(shaderProgram, "camMatrix");
 		glActiveTexture(GL_TEXTURE0 + 0);
-		Textures[9].Bind();
-		vao[9].Bind();
+		textures[sun].Bind();
+		vao[sun].Bind();
 		glDrawElements(GL_TRIANGLES, sizeof(BodyIndices[9]) / sizeof(int), GL_UNSIGNED_INT, 0);
-
-	
-
-
-
 
 		//Skybox rendering
 		glDepthFunc(GL_LEQUAL);
 		skyboxShader.Activate();
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
-		view = glm::mat4(glm::mat3(glm::lookAt(camera.Position, camera.Position + camera.Orientation, camera.Up)));
+		view = glm::mat4(glm::mat3(glm::lookAt(camera.GetPosition(), camera.GetPosition() + camera.GetOrientation(), camera.GetDirectionUp())));
 		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
 		skytex.Bind();
@@ -461,7 +399,7 @@ int main()
 		vao[i].Delete();
 		vbo[i].Delete();
 		ebo[i].Delete();
-		Textures[i].Delete();
+		textures[i].Delete();
 	}
 	skytex.Delete();
 	shaderProgram.Delete();
