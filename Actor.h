@@ -14,22 +14,14 @@
 #include "EBO.h"
 #include "Camera.h"
 #include "Orbit.h"
-#include "Actor.h"
 #include "Scene.h"
+#include "Geometry.h"
 
-class Actor
+class Actor : public Geometry
 {
 public:
-	Actor(int index, Shader& shaderProgram);
-	VAO GetVAO();
-	VBO GetVBO();
-	EBO GetEBO();
-	Texture GetTexture();
-	Texture GetNormalMap();
-private:
+	Actor(float radius);
 	VAO vao;
 	VBO vbo;
 	EBO ebo;
-	Texture texture;
-	Texture normalMap;
 };

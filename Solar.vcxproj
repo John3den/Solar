@@ -154,10 +154,14 @@
     <ClCompile Include="Libs\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="OpenglObject.cpp" />
     <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Solar.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="VAO.cpp" />
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
@@ -188,9 +192,13 @@
     <ClInclude Include="OpenglBuffer.h" />
     <ClInclude Include="OpenglObject.h" />
     <ClInclude Include="orbit.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="Libs\include\stb\stb_image.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="VAO.h" />
     <ClInclude Include="VBO.h" />
   </ItemGroup>

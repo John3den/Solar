@@ -13,8 +13,8 @@
 class Camera
 {
 public:
-	Camera(int width, int height, glm::vec3 position);
-	void updateMatrix(float FOVdeg, float nearPlane, float farPlane);
+	Camera(int width, int height, glm::vec3 position, float FOV, float nearPlane, float farPlane);
+	void updateMatrix();
 	void Matrix(Shader& shader, const char* uniform);
 	void Inputs(GLFWwindow* window);
 
@@ -23,6 +23,9 @@ public:
 	glm::vec3 GetDirectionUp();
 	glm::vec3 GetPosition();
 private:
+	const float FOVdeg;
+	const float nearPlane;
+	const float farPlane;
 	const int width;
 	const int height;
 	const float defaultSpeed = 0.1f;
