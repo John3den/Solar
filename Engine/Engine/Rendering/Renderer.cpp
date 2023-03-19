@@ -10,44 +10,49 @@ namespace Engine
 	{
 		for (int i = 0; i < 9; i++)
 		{
-			if (i != 1)
-				position = glm::vec3(scene.orbits[i].GetPosition(scene.alpha + i * PI / 9.0f).x, 0.0f, scene.orbits[i].GetPosition(scene.alpha + i * PI / 9.0f).y);
+			// moon orbits earth so position is calculated differently
+			if (i != moon)
+				position = glm::vec3(scene.GetOrbit(i).GetPosition(scene.GetTime()).x, 
+									0.0f,
+									scene.GetOrbit(i).GetPosition(scene.GetTime()).y);
 			else
-				position = glm::vec3(scene.orbits[0].GetPosition(scene.alpha).x + scene.orbits[i].GetPosition(scene.alpha).x, 0.0f, scene.orbits[0].GetPosition(scene.alpha).y + scene.orbits[i].GetPosition(scene.alpha).y);
+				position = glm::vec3(scene.GetOrbit(0).GetPosition(scene.GetTime()).x + scene.GetOrbit(1).GetPosition(scene.GetTime()).x, 
+									0.0f,
+									scene.GetOrbit(0).GetPosition(scene.GetTime()).y + scene.GetOrbit(1).GetPosition(scene.GetTime()).y);
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, position);
-
+			//bind textures, buffers, normal maps and make a drawcall
 			glUniformMatrix4fv(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-			glUniform3f(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "camPos"), scene.camera.GetPosition().x, scene.camera.GetPosition().y, scene.camera.GetPosition().z);
+			glUniform3f(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "camPos"), scene.GetCamera()->GetPosition().x, scene.GetCamera()->GetPosition().y, scene.GetCamera()->GetPosition().z);
 			glUniform3f(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "lightPos"), 0, 0, 0);
-			scene.camera.Matrix((*GetLightShader(phongLighting)), "camMatrix");
+			scene.GetCamera()->Matrix((*GetLightShader(phongLighting)), "camMatrix");
 			glActiveTexture(GL_TEXTURE0 + 0);
-			scene.textures[i].Bind();
+			scene.GetTexture(i).Bind();
 			glActiveTexture(GL_TEXTURE0 + 1);
-			scene.normalMaps[i].Bind();
-			scene.vao[i].Bind();
-			glDrawElements(GL_TRIANGLES, sizeof(scene.geometries[i].indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+			scene.GetNormalMap(i).Bind();
+			scene.GetVAO(i).Bind();
+			glDrawElements(GL_TRIANGLES, sizeof(scene.GetGeometry(i).indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 		}
 		//render Sun
 		(*GetLightSourceShader()).Activate();
-
-		position = glm::vec3(scene.orbits[sun].GetPosition(scene.alpha).x, 0.0f, scene.orbits[sun].GetPosition(scene.alpha).y);
+		//sets position and rotation
+		position = glm::vec3(scene.GetOrbit(sun).GetPosition(scene.GetTime()).x, 0.0f, scene.GetOrbit(sun).GetPosition(scene.GetTime()).y);
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, position);
-		model = glm::rotate(model, scene.alpha, glm::vec3(0, 1, 0));
-
+		model = glm::rotate(model, scene.GetTime(), glm::vec3(0, 1, 0));
+		//binds buffers and makes a drawcall
 		glUniformMatrix4fv(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "model"), 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3f(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "camPos"), scene.camera.GetPosition().x, scene.camera.GetPosition().y, scene.camera.GetPosition().z);
-		scene.camera.Matrix((*GetLightShader(phongLighting)), "camMatrix");
+		glUniform3f(glGetUniformLocation((*GetLightShader(phongLighting)).GetID(), "camPos"), scene.GetCamera()->GetPosition().x, scene.GetCamera()->GetPosition().y, scene.GetCamera()->GetPosition().z);
+		scene.GetCamera()->Matrix((*GetLightShader(phongLighting)), "camMatrix");
 		glActiveTexture(GL_TEXTURE0 + 0);
-		scene.textures[sun].Bind();
-		scene.vao[sun].Bind();
-		glDrawElements(GL_TRIANGLES, sizeof(scene.geometries[sun].indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		scene.GetTexture(sun).Bind();
+		scene.GetVAO(sun).Bind();
+		glDrawElements(GL_TRIANGLES, sizeof(scene.GetGeometry(sun).indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 	}
 
 	void Renderer::Destroy()
 	{
-		GUI.ClearUI();
+		UI::ClearUI();
 		GetSkyboxShader()->Delete();
 		GetLightSourceShader()->Delete();
 		GetLightShader(simpleLighting)->Delete();
@@ -81,13 +86,13 @@ namespace Engine
 		(*GetSkyboxShader()).Activate();
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
-		view = glm::mat4(glm::mat3(glm::lookAt(scene.camera.GetPosition(), scene.camera.GetPosition() + scene.camera.GetOrientation(), scene.camera.GetDirectionUp())));
+		view = glm::mat4(glm::mat3(glm::lookAt(scene.GetCamera()->GetPosition(), scene.GetCamera()->GetPosition() + scene.GetCamera()->GetOrientation(), scene.GetCamera()->GetDirectionUp())));
 		projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 		glUniformMatrix4fv(glGetUniformLocation((*GetSkyboxShader()).GetID(), "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation((*GetSkyboxShader()).GetID(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-		glBindVertexArray((*(scene.skybox)).skyboxVAO);
+		glBindVertexArray(scene.GetSkybox()->GetVAO());
 		glActiveTexture(GL_TEXTURE0);
-		(*(scene.skybox)).GetTexture().Bind();
+		scene.GetSkybox()->GetTexture().Bind();
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS);
@@ -170,7 +175,7 @@ namespace Engine
 	{
 		RenderBodies(scene);
 		RenderSkybox(scene);
-		GUI.RenderUI(lightingType);
+		UI::RenderUI(lightingType);
 	}
 	void Renderer::RenderFrame(Scene scene)
 	{
@@ -180,6 +185,13 @@ namespace Engine
 	void Renderer::NewFrame()
 	{
 		Clear();
-		GUI.CreateUIFrame();
+		UI::CreateUIFrame();
 	}
+
+	void Renderer::InitUI(GLFWwindow* window)
+	{
+		UI::Init(window);
+	}
+
 }
+

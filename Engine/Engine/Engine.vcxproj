@@ -181,7 +181,6 @@
     <ClCompile Include="Rendering\ShaderClass.cpp" />
     <ClCompile Include="Simulation\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
-    <ClCompile Include="UI\UI.cpp" />
     <ClCompile Include="OpenglClasses\VAO.cpp" />
     <ClCompile Include="OpenglClasses\VBO.cpp" />
   </ItemGroup>

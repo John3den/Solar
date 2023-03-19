@@ -19,7 +19,7 @@ namespace Engine
 		currentFrame = glfwGetTime();
 		deltaTime = (currentFrame - prevFrame) / 4;
 		prevFrame = currentFrame;
-		alpha += deltaTime * PI;
+		time += deltaTime * PI;
 	}
 
 
@@ -49,7 +49,7 @@ namespace Engine
 
 
 	Scene::Scene(Renderer renderer) :
-		camera(Camera(width, height, glm::vec3(0.0f, 4.0f, 25.0f), 45.0f, 0.1f, 1000.0f)),
+		camera(new Camera(width, height, glm::vec3(0.0f, 4.0f, 25.0f), 45.0f, 0.1f, 1000.0f)),
 		skybox(new Skybox(Texture(std::string("Textures/SkyXP.png").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE), renderer))
 	{
 		InitializeModels();
@@ -57,29 +57,9 @@ namespace Engine
 
 	}
 
-	void Scene::CreateOrbits()
+	void Scene::SetOrbits(std::vector<Orbit> orb)
 	{
-		for (int i = 0; i < 10; i++)
-		{
-			float a, b, orbitingSpeed;
-			if (i == moon)
-			{
-				a = 3;
-				b = 3;
-				orbitingSpeed = 2.0f;
-			}
-			if (i == sun)
-			{
-				a = b = orbitingSpeed = 0;
-			}
-			else
-			{
-				a = 13.0f + (i * 2 + 1) * 5.0f * (i / 3.0f + 2.0f * sin(i / 7.0f)) / 10.0f;
-				b = 10.0f + (i * 2 + 1) * (3.0f) * (i * log10(i + 1) + 1) / 10.0f;
-				orbitingSpeed = 0.5f * (1 + sin(i / 3.0f));
-			}
-			orbits.push_back(Engine::Orbit(a, b, orbitingSpeed));
-		}
+		orbits = orb;
 	}
 
 	void Scene::CreateGeometries()
@@ -90,10 +70,12 @@ namespace Engine
 			geometries.push_back(g);
 		}
 	}
-
+	float Scene::GetTime()
+	{
+		return time;
+	}
 	void Scene::InitializeModels()
 	{
-		CreateOrbits();
 		CreateGeometries();
 		for (int i = 0; i < 10; i++)
 		{
@@ -130,10 +112,47 @@ namespace Engine
 
 	void Scene::Update(GLFWwindow* window)
 	{
-		if (camera.IsCursorHidden())
+		if (camera->IsCursorHidden())
 			ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 		UpdateTime();
-		camera.Inputs(window);
-		camera.updateMatrix();
+		camera->Inputs(window);
+		camera->updateMatrix();
+	}
+	std::shared_ptr<Camera> Scene::GetCamera()
+	{
+		return camera;
+	}
+	VAO Scene::GetVAO(int i)
+	{
+		return vao[i];
+	}
+	VBO Scene::GetVBO(int i)
+	{
+		return vbo[i];
+	}
+	EBO Scene::GetEBO(int i)
+	{
+		return ebo[i];
+	}
+
+	std::shared_ptr<Skybox> Scene::GetSkybox()
+	{
+		return skybox;
+	}
+	Orbit Scene::GetOrbit(int i)
+	{
+		return orbits[i];
+	}
+	Geometry Scene::GetGeometry(int i)
+	{
+		return geometries[i];
+	}
+	Texture Scene::GetTexture(int i)
+	{
+		return textures[i];
+	}
+	Texture Scene::GetNormalMap(int i)
+	{
+		return normalMaps[i];
 	}
 }

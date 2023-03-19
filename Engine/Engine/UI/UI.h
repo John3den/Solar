@@ -11,7 +11,7 @@ namespace Engine
 	class UI
 	{
 	public:
-		void InitUI(GLFWwindow* window)
+		static void Init(GLFWwindow* window)
 		{
 			const char* glsl_version = "#version 420";
 			IMGUI_CHECKVERSION();
@@ -28,13 +28,13 @@ namespace Engine
 			bool show_another_window = false;
 			ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 		}
-		void CreateUIFrame()
+		static void CreateUIFrame()
 		{
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 		}
-		void RenderUI(int& lightingType)
+		static void RenderUI(int& lightingType)
 		{
 			{
 				static float f = 0.0f;
@@ -55,7 +55,7 @@ namespace Engine
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
-		void ClearUI()
+		static void ClearUI()
 		{
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();

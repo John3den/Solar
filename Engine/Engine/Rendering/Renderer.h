@@ -18,25 +18,26 @@ namespace Engine
 	class Renderer
 	{
 	public:
+		Renderer();
 		void NewFrame();
 		void RenderFrame(Scene scene);
 		void Destroy();
-		void Clear();
-		void Frame(Scene scene);
-		UI GUI;
-		Renderer();
 		static GLFWwindow* Init();
-		void RenderSkybox(Scene scene);
 		const std::shared_ptr<Shader> GetLightShader(LightingMode mode);
-		const std::shared_ptr<Shader> GetLightSourceShader();
-		const std::shared_ptr<Shader> GetSkyboxShader();
-		void RenderBodies(Scene scene);
-		int lightingType = 0;
-		void ActivateShader();
+		void InitUI(GLFWwindow* window);
 	private:
+		int lightingType = 0;
 		std::shared_ptr<Shader> phong;
 		std::shared_ptr<Shader> simple;
 		std::shared_ptr<Shader> lightSource;
 		std::shared_ptr<Shader> skybox;
+
+		void ActivateShader();
+		void Clear();
+		void RenderSkybox(Scene scene);
+		void Frame(Scene scene);
+		void RenderBodies(Scene scene);
+		const std::shared_ptr<Shader> GetLightSourceShader();
+		const std::shared_ptr<Shader> GetSkyboxShader();
 	};
 }

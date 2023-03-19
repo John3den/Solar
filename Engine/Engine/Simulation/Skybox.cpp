@@ -52,6 +52,10 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
+	unsigned int Skybox::GetVAO()
+	{
+		return skyboxVAO;
+	}
 	void Skybox::GenerateSkyboxBuffers()
 	{
 		glGenVertexArrays(1, &skyboxVAO);
@@ -68,4 +72,5 @@ namespace Engine
 		glBindVertexArray(0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+	
 }

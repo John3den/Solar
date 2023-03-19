@@ -2,8 +2,7 @@
   Renderer.cpp
   Scene.cpp
 C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Simulation\Scene.cpp(20,42): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Simulation\Scene.cpp(78,15): warning C4244: =: преобразование "double" в "float", возможна потеря данных
   Skybox.cpp
   Создание кода...
-C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Rendering\Renderer.cpp(157): warning C4715: Engine::Renderer::GetLightShader: значение возвращается не при всех путях выполнения
+C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Rendering\Renderer.cpp(162): warning C4715: Engine::Renderer::GetLightShader: значение возвращается не при всех путях выполнения
   Engine.vcxproj -> C:\Users\JohnEden\Source\Repos\Solar\Libs\Engine\Engine.lib
