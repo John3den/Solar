@@ -21,46 +21,46 @@
     <ClInclude Include="framework.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="orbit.h">
+    <ClInclude Include="Simulation\orbit.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="EBO.h">
+    <ClInclude Include="OpenglClasses\EBO.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="OpenglBuffer.h">
+    <ClInclude Include="OpenglClasses\OpenglBuffer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="OpenglObject.h">
+    <ClInclude Include="OpenglClasses\OpenglObject.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="VBO.h">
+    <ClInclude Include="OpenglClasses\VBO.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="VAO.h">
+    <ClInclude Include="OpenglClasses\VAO.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="Rendering\Texture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderClass.h">
+    <ClInclude Include="Rendering\ShaderClass.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="Rendering\Camera.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Geometry.h">
+    <ClInclude Include="Simulation\Geometry.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="Rendering\Renderer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="Simulation\Scene.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Skybox.h">
+    <ClInclude Include="Simulation\Skybox.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
+    <ClInclude Include="UI\UI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,43 +68,43 @@
     <ClCompile Include="pch.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Orbit.cpp">
+    <ClCompile Include="Simulation\Orbit.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="EBO.cpp">
+    <ClCompile Include="OpenglClasses\EBO.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="OpenglObject.cpp">
+    <ClCompile Include="OpenglClasses\OpenglObject.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="VAO.cpp">
+    <ClCompile Include="OpenglClasses\VAO.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="VBO.cpp">
+    <ClCompile Include="OpenglClasses\VBO.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="Rendering\Texture.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderClass.cpp">
+    <ClCompile Include="Rendering\ShaderClass.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="Rendering\Camera.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry.cpp">
+    <ClCompile Include="Simulation\Geometry.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp">
+    <ClCompile Include="Rendering\Renderer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="Simulation\Scene.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Skybox.cpp">
+    <ClCompile Include="Simulation\Skybox.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
+    <ClCompile Include="UI\UI.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

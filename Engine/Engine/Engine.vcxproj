@@ -84,7 +84,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\UI;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\OpenglClasses</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -102,7 +102,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\UI;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\OpenglClasses</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -147,43 +147,43 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="EBO.h" />
+    <ClInclude Include="Rendering\Camera.h" />
+    <ClInclude Include="OpenglClasses\EBO.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Geometry.h" />
-    <ClInclude Include="OpenglBuffer.h" />
-    <ClInclude Include="OpenglObject.h" />
-    <ClInclude Include="orbit.h" />
+    <ClInclude Include="Simulation\Geometry.h" />
+    <ClInclude Include="OpenglClasses\OpenglBuffer.h" />
+    <ClInclude Include="OpenglClasses\OpenglObject.h" />
+    <ClInclude Include="Simulation\orbit.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="ShaderClass.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="UI.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
+    <ClInclude Include="Rendering\Renderer.h" />
+    <ClInclude Include="Simulation\Scene.h" />
+    <ClInclude Include="Rendering\ShaderClass.h" />
+    <ClInclude Include="Simulation\Skybox.h" />
+    <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="UI\UI.h" />
+    <ClInclude Include="OpenglClasses\VAO.h" />
+    <ClInclude Include="OpenglClasses\VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="Geometry.cpp" />
-    <ClCompile Include="OpenglObject.cpp" />
-    <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Rendering\Camera.cpp" />
+    <ClCompile Include="OpenglClasses\EBO.cpp" />
+    <ClCompile Include="Simulation\Geometry.cpp" />
+    <ClCompile Include="OpenglClasses\OpenglObject.cpp" />
+    <ClCompile Include="Simulation\Orbit.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="ShaderClass.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="UI.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
+    <ClCompile Include="Rendering\Renderer.cpp" />
+    <ClCompile Include="Simulation\Scene.cpp" />
+    <ClCompile Include="Rendering\ShaderClass.cpp" />
+    <ClCompile Include="Simulation\Skybox.cpp" />
+    <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="UI\UI.cpp" />
+    <ClCompile Include="OpenglClasses\VAO.cpp" />
+    <ClCompile Include="OpenglClasses\VBO.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
