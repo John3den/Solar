@@ -1,8 +1,7 @@
 ﻿#include "Renderer.h"
 #include "Scene.h"
-#include "Simulation.h"
 
-std::vector<Engine::Orbit> orbits;
+
 int main()
 {
 	GLFWwindow* window = NULL;
@@ -10,11 +9,14 @@ int main()
 	{
 		window = Engine::Renderer::Init();
 	}
-	catch(std::string errorMessage) { std::cout << errorMessage; }
+	catch(std::string errorMessage) 
+	{
+		std::cout << errorMessage;
+		return 0;
+	}
 	Engine::Renderer renderer;
 	Engine::Scene scene(renderer);
-	CreateOrbits();
-	scene.SetOrbits(orbits);
+	scene.SetOrbits(Engine::Orbit::CreateOrbits());
 	renderer.InitUI(window);
 	while (!glfwWindowShouldClose(window))
 	{

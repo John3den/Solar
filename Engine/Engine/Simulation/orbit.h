@@ -1,5 +1,5 @@
 #pragma once
-
+#include <vector>
 #include <glm/glm.hpp>
 namespace Engine
 {
@@ -7,6 +7,7 @@ namespace Engine
 	class Orbit
 	{
 	public:
+		static std::vector<Orbit> CreateOrbits();
 		Orbit(float a, float b, float speed);
 		glm::vec2 GetPosition(float angle);
 	private:

@@ -16,10 +16,8 @@ namespace Engine
 
 	void Camera::updateMatrix()
 	{
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-		view = glm::lookAt(Position, Position + Orientation, Up);
-		projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
+		glm::mat4 view = glm::lookAt(Position, Position + Orientation, Up);
+		glm::mat4 projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
 		cameraMatrix = projection * view;
 	}
 

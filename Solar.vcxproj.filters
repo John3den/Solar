@@ -45,9 +45,6 @@
     <ClCompile Include="stb_image.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Simulation.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\default.vert" />
@@ -91,9 +88,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Libs\include\imgui\imgui_impl_opengl3_loader.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="Simulation.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
