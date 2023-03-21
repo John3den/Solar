@@ -9,9 +9,9 @@ int main()
 	{
 		window = Engine::Renderer::Init();
 	}
-	catch(std::string errorMessage) 
+	catch(const Engine::FailedToCreateWindowException& exception) 
 	{
-		std::cout << errorMessage;
+		std::cout << exception.what();
 		return 0;
 	}
 	Engine::Renderer renderer;

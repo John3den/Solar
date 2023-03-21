@@ -6,7 +6,7 @@
 #include<sstream>
 #include<iostream>
 #include<cerrno>
-
+#include "FileReadingFailedException.h"
 #include "OpenglObject.h"
 namespace Engine
 {

@@ -109,7 +109,7 @@ namespace Engine
 		{
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
-			throw std::string("Failed to initialize renderer");
+			throw FailedToCreateWindowException();
 		}
 		glfwMakeContextCurrent(window);
 		gladLoadGL();

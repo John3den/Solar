@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include "UI.h"
 #include "Scene.h"
+#include "FailedToCreateWindowException.h"
 namespace Engine
 {
 	enum LightingMode { phongLighting, simpleLighting };
