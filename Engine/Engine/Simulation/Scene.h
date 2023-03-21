@@ -19,18 +19,18 @@ namespace Engine
 	class Scene
 	{
 	public:
-		Scene(Renderer renderer);
+		Scene(const Renderer& renderer);
 
-		float GetTime();
-		VAO GetVAO(int i);
-		VBO GetVBO(int i);
-		EBO GetEBO(int i);
-		Orbit GetOrbit(int i);
-		std::shared_ptr<Skybox> GetSkybox();
-		Geometry GetGeometry(int i);
-		Texture GetTexture(int i);
-		Texture GetNormalMap(int i);
-		std::shared_ptr<Camera> GetCamera();
+		float GetTime() const;
+		VAO GetVAO(int i) const;
+		VBO GetVBO(int i) const;
+		EBO GetEBO(int i) const;
+		Orbit GetOrbit(int i) const;
+		std::shared_ptr<Skybox> GetSkybox() const;
+		Geometry GetGeometry(int i) const;
+		Texture GetTexture(int i) const;
+		Texture GetNormalMap(int i) const;
+		std::shared_ptr<Camera> GetCamera() const;
 
 		void Destroy();
 		void Update(GLFWwindow* window);
@@ -38,7 +38,7 @@ namespace Engine
 		void InitializeModels();
 		void UpdateTime();
 		void SetOrbits(std::vector<Orbit> orb);
-		void GenerateTextures(Renderer renderer);
+		void GenerateTextures(const Renderer& renderer);
 
 	private:
 		std::vector<Texture> normalMaps;

@@ -6,8 +6,8 @@ namespace Engine
 	class OpenglObject
 	{
 	public:
-		virtual GLuint GetID();
-
+		virtual GLuint GetID() const;
+		
 		virtual void Delete() = 0;
 	protected:
 		GLuint ID;

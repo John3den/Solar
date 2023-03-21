@@ -22,7 +22,7 @@ namespace Engine
 		time += deltaTime * PI;
 	}
 
-	void Scene::GenerateTextures(Renderer renderer)
+	void Scene::GenerateTextures(const Renderer& renderer)
 	{
 		std::string texPath = "";
 		for (int i = 0; i < 10; i++)
@@ -47,7 +47,7 @@ namespace Engine
 
 
 
-	Scene::Scene(Renderer renderer) :
+	Scene::Scene(const Renderer& renderer) :
 		camera(new Camera(glm::vec3(0.0f, 4.0f, 25.0f), 45.0f, 0.1f, 1000.0f)),
 		skybox(new Skybox(Texture(std::string("Textures/SkyXP.png").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE), renderer))
 	{
@@ -69,7 +69,7 @@ namespace Engine
 			geometries.push_back(g);
 		}
 	}
-	float Scene::GetTime()
+	float Scene::GetTime() const
 	{
 		return time;
 	}
@@ -118,39 +118,39 @@ namespace Engine
 		camera->Inputs(window);
 		camera->updateMatrix();
 	}
-	std::shared_ptr<Camera> Scene::GetCamera()
+	std::shared_ptr<Camera> Scene::GetCamera() const
 	{
 		return camera;
 	}
-	VAO Scene::GetVAO(int i)
+	VAO Scene::GetVAO(int i) const
 	{
 		return vao[i];
 	}
-	VBO Scene::GetVBO(int i)
+	VBO Scene::GetVBO(int i) const
 	{
 		return vbo[i];
 	}
-	EBO Scene::GetEBO(int i)
+	EBO Scene::GetEBO(int i) const
 	{
 		return ebo[i];
 	}
-	std::shared_ptr<Skybox> Scene::GetSkybox()
+	std::shared_ptr<Skybox> Scene::GetSkybox() const
 	{
 		return skybox;
 	}
-	Orbit Scene::GetOrbit(int i)
+	Orbit Scene::GetOrbit(int i) const
 	{
 		return orbits[i];
 	}
-	Geometry Scene::GetGeometry(int i)
+	Geometry Scene::GetGeometry(int i) const
 	{
 		return geometries[i];
 	}
-	Texture Scene::GetTexture(int i)
+	Texture Scene::GetTexture(int i) const
 	{
 		return textures[i];
 	}
-	Texture Scene::GetNormalMap(int i)
+	Texture Scene::GetNormalMap(int i) const
 	{
 		return normalMaps[i];
 	}

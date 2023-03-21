@@ -7,10 +7,10 @@ namespace Engine
 	class Skybox
 	{
 	public:
-		Skybox(Texture tex, Renderer renderer);
+		Skybox(const Texture& tex, const Renderer& renderer);
 
-		unsigned int GetVAO();
-		Texture GetTexture();
+		unsigned int GetVAO() const;
+		Texture GetTexture() const;
 
 		void GenerateSkyboxBuffers();
 		void GenerateCubeMapTexture();

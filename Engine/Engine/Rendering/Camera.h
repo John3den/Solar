@@ -16,14 +16,15 @@ namespace Engine
 	public:
 		Camera(glm::vec3 position, float FOV, float nearPlane, float farPlane);
 
-		glm::vec3 GetOrientation();
-		glm::vec3 GetDirectionUp();
-		glm::vec3 GetPosition();
+		glm::vec3 GetOrientation() const;
+		glm::vec3 GetDirectionUp() const;
+		glm::vec3 GetPosition() const;
+		bool IsCursorHidden() const;
 
 		void updateMatrix();
-		void Matrix(Shader& shader, const char* uniform);
+		void Matrix(const Shader& shader, const char* uniform);
 		void Inputs(GLFWwindow* window);
-		bool IsCursorHidden();
+
 
 	private:
 		const float FOVdeg;

@@ -3,7 +3,7 @@
 #include "OpenglObject.h"
 namespace Engine
 {
-	GLuint OpenglObject::GetID()
+	GLuint OpenglObject::GetID() const
 	{
 		return ID;
 	}

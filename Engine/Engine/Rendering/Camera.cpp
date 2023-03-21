@@ -19,27 +19,27 @@ namespace Engine
 		cameraMatrix = projection * view;
 	}
 
-	glm::vec3 Camera::GetOrientation()
+	glm::vec3 Camera::GetOrientation() const
 	{
 		return Orientation;
 	}
 
-	glm::vec3 Camera::GetDirectionUp()
+	glm::vec3 Camera::GetDirectionUp() const
 	{
 		return Up;
 	}
 
-	bool Camera::IsCursorHidden()
+	bool Camera::IsCursorHidden() const
 	{
 		return cursorHidden;
 	}
 
-	glm::vec3 Camera::GetPosition()
+	glm::vec3 Camera::GetPosition() const
 	{
 		return Position;
 	}
 
-	void Camera::Matrix(Shader& shader, const char* uniform)
+	void Camera::Matrix(const Shader& shader, const char* uniform)
 	{
 		glUniformMatrix4fv(glGetUniformLocation(shader.GetID(), uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 	}

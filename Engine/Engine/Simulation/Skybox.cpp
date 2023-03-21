@@ -30,14 +30,14 @@ namespace Engine
 		3, 7, 6,
 		6, 2, 3
 	};
-	Skybox::Skybox(Texture tex, Renderer renderer) : skytex(tex)
+	Skybox::Skybox(const Texture& tex, const Renderer& renderer) : skytex(tex)
 	{
 		skytex.TexUnit(*renderer.GetLightShader(phongLighting), "skybox", 0);
 		GenerateSkyboxBuffers();
 		GenerateCubeMapTexture();
 	}
 
-	Texture Skybox::GetTexture()
+	Texture Skybox::GetTexture() const
 	{
 		return skytex;
 	}
@@ -52,7 +52,7 @@ namespace Engine
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
-	unsigned int Skybox::GetVAO()
+	unsigned int Skybox::GetVAO() const
 	{
 		return skyboxVAO;
 	}

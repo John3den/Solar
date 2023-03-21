@@ -4,7 +4,7 @@
 namespace Engine
 {
 	enum { earth, moon, venus, mars, merucury, jupiter, saturn, uranus, neptune, sun };
-	void Renderer::RenderBodies(Scene scene)
+	void Renderer::RenderBodies(const Scene& scene)
 	{
 		glm::vec3 position;
 		glm::mat4 model;
@@ -80,7 +80,7 @@ namespace Engine
 		}
 	}
 
-	void Renderer::RenderSkybox(Scene scene)
+	void Renderer::RenderSkybox(const Scene& scene)
 	{
 		glDepthFunc(GL_LEQUAL);
 		(*GetSkyboxShader()).Activate();
@@ -149,7 +149,7 @@ namespace Engine
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	const std::shared_ptr<Shader> Renderer::GetLightShader(LightingMode mode)
+	const std::shared_ptr<Shader> Renderer::GetLightShader(LightingMode mode) const
 	{
 		if (mode == phongLighting)
 		{
@@ -171,13 +171,13 @@ namespace Engine
 		return skybox;
 	}
 
-	void Renderer::Frame(Scene scene)
+	void Renderer::Frame(const Scene& scene)
 	{
 		RenderBodies(scene);
 		RenderSkybox(scene);
 		UI::RenderUI(lightingType);
 	}
-	void Renderer::RenderFrame(Scene scene)
+	void Renderer::RenderFrame(const Scene& scene)
 	{
 		ActivateShader();
 		Frame(scene);
