@@ -13,25 +13,29 @@ namespace Engine
 {
 	enum LightingMode { phongLighting, simpleLighting };
 
-	const unsigned int width = 1920;
-	const unsigned int height = 1080;
 	class Scene;
+
 	class Renderer
 	{
 	public:
 		Renderer();
+
+		const std::shared_ptr<Shader> GetLightShader(LightingMode mode);
+
+		static GLFWwindow* Init();
 		void NewFrame();
 		void RenderFrame(Scene scene);
 		void Destroy();
-		static GLFWwindow* Init();
-		const std::shared_ptr<Shader> GetLightShader(LightingMode mode);
 		void InitUI(GLFWwindow* window);
+		
+		static const unsigned int width = 1920;
+		static const unsigned int height = 1080;
 	private:
-		int lightingType = 0;
 		std::shared_ptr<Shader> phong;
 		std::shared_ptr<Shader> simple;
 		std::shared_ptr<Shader> lightSource;
 		std::shared_ptr<Shader> skybox;
+		int lightingType = 0;
 
 		void ActivateShader();
 		void Clear();

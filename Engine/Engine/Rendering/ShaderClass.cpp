@@ -33,7 +33,6 @@ namespace Engine
 			glCompileShader(vertexShader);
 			compileErrors(vertexShader, "VERTEX");
 
-
 			GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragmentShader, 1, &fragmentSource, NULL);
 			glCompileShader(fragmentShader);

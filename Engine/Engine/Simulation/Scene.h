@@ -11,20 +11,17 @@
 namespace Engine
 {
 	class Skybox;
+
 	class Renderer;
+
+	class Camera;
+
 	class Scene
 	{
 	public:
-		float GetTime();
-		void Destroy();
-		void Update(GLFWwindow* window);
 		Scene(Renderer renderer);
-		void CreateGeometries();
-		void InitializeModels();
-		void UpdateTime();
-		void SetOrbits(std::vector<Orbit> orb);
-		void GenerateTextures(Renderer renderer);
-		std::shared_ptr<Camera> GetCamera();
+
+		float GetTime();
 		VAO GetVAO(int i);
 		VBO GetVBO(int i);
 		EBO GetEBO(int i);
@@ -33,6 +30,15 @@ namespace Engine
 		Geometry GetGeometry(int i);
 		Texture GetTexture(int i);
 		Texture GetNormalMap(int i);
+		std::shared_ptr<Camera> GetCamera();
+
+		void Destroy();
+		void Update(GLFWwindow* window);
+		void CreateGeometries();
+		void InitializeModels();
+		void UpdateTime();
+		void SetOrbits(std::vector<Orbit> orb);
+		void GenerateTextures(Renderer renderer);
 
 	private:
 		std::vector<Texture> normalMaps;

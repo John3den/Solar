@@ -22,7 +22,6 @@ namespace Engine
 		time += deltaTime * PI;
 	}
 
-
 	void Scene::GenerateTextures(Renderer renderer)
 	{
 		std::string texPath = "";
@@ -49,7 +48,7 @@ namespace Engine
 
 
 	Scene::Scene(Renderer renderer) :
-		camera(new Camera(width, height, glm::vec3(0.0f, 4.0f, 25.0f), 45.0f, 0.1f, 1000.0f)),
+		camera(new Camera(glm::vec3(0.0f, 4.0f, 25.0f), 45.0f, 0.1f, 1000.0f)),
 		skybox(new Skybox(Texture(std::string("Textures/SkyXP.png").c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE), renderer))
 	{
 		InitializeModels();
@@ -83,12 +82,13 @@ namespace Engine
 			tempvao.Bind();
 			VBO tempvbo = VBO(geometries[i].vertices, sizeof(geometries[i].vertices));
 			EBO tempebo = EBO(geometries[i].indices, sizeof(geometries[i].indices));
-			tempvao.LinkAttrib(tempvbo, 0, 3, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)0);
-			tempvao.LinkAttrib(tempvbo, 1, 3, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)(3 * sizeof(float)));
-			tempvao.LinkAttrib(tempvbo, 2, 2, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)(6 * sizeof(float)));
-			tempvao.LinkAttrib(tempvbo, 3, 3, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)(8 * sizeof(float)));
-			tempvao.LinkAttrib(tempvbo, 4, 3, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)(11 * sizeof(float)));
-			tempvao.LinkAttrib(tempvbo, 5, 3, GL_FLOAT, VERTEX_SIZE * sizeof(float), (void*)(14 * sizeof(float)));
+			GLsizeiptr stride = VERTEX_SIZE * sizeof(float);
+			tempvao.LinkAttrib(tempvbo, 0, 3, GL_FLOAT, stride, (void*)0);
+			tempvao.LinkAttrib(tempvbo, 1, 3, GL_FLOAT, stride, (void*)(3 * sizeof(float)));
+			tempvao.LinkAttrib(tempvbo, 2, 2, GL_FLOAT, stride, (void*)(6 * sizeof(float)));
+			tempvao.LinkAttrib(tempvbo, 3, 3, GL_FLOAT, stride, (void*)(8 * sizeof(float)));
+			tempvao.LinkAttrib(tempvbo, 4, 3, GL_FLOAT, stride, (void*)(11 * sizeof(float)));
+			tempvao.LinkAttrib(tempvbo, 5, 3, GL_FLOAT, stride, (void*)(14 * sizeof(float)));
 			tempvao.Unbind();
 			tempvbo.Unbind();
 			tempebo.Unbind();
@@ -134,7 +134,6 @@ namespace Engine
 	{
 		return ebo[i];
 	}
-
 	std::shared_ptr<Skybox> Scene::GetSkybox()
 	{
 		return skybox;

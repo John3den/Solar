@@ -14,7 +14,6 @@ namespace Engine
 		Geometry(float radius);
 		GLfloat vertices[GEOMETRY_RESOLUTION * GEOMETRY_RESOLUTION * VERTEX_SIZE];
 		GLuint indices[(2 * GEOMETRY_RESOLUTION * (GEOMETRY_RESOLUTION - 1)) * 3];
-
 	};
 
 }

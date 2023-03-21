@@ -3,9 +3,7 @@
 #include"Camera.h"
 namespace Engine
 {
-	Camera::Camera(int width, int height, glm::vec3 position, float FOV, float nearPlane, float farPlane) :
-		width(width),
-		height(height),
+	Camera::Camera(glm::vec3 position, float FOV, float nearPlane, float farPlane) :
 		FOVdeg(FOV),
 		nearPlane(nearPlane),
 		farPlane(farPlane)
@@ -17,7 +15,7 @@ namespace Engine
 	void Camera::updateMatrix()
 	{
 		glm::mat4 view = glm::lookAt(Position, Position + Orientation, Up);
-		glm::mat4 projection = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
+		glm::mat4 projection = glm::perspective(glm::radians(FOVdeg), (float)Renderer::width / Renderer::height, nearPlane, farPlane);
 		cameraMatrix = projection * view;
 	}
 
@@ -93,13 +91,13 @@ namespace Engine
 				cursorHidden = true;
 				if (firstClick)
 				{
-					glfwSetCursorPos(window, (width / 2), (height / 2));
+					glfwSetCursorPos(window, (Renderer::width / 2), (Renderer::height / 2));
 					firstClick = false;
 				}
 
 
-				float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
-				float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
+				float rotX = sensitivity * (float)(mouseY - (Renderer::height / 2)) / Renderer::height;
+				float rotY = sensitivity * (float)(mouseX - (Renderer::width / 2)) / Renderer::width;
 
 				glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotX), glm::normalize(glm::cross(Orientation, Up)));
 
@@ -112,7 +110,7 @@ namespace Engine
 				Orientation = glm::rotate(Orientation, glm::radians(-rotY), Up);
 
 
-				glfwSetCursorPos(window, (width / 2), (height / 2));
+				glfwSetCursorPos(window, (Renderer::width / 2), (Renderer::height / 2));
 			}
 		}
 		else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)

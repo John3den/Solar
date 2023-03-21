@@ -8,10 +8,13 @@ namespace Engine
 	{
 	public:
 		Skybox(Texture tex, Renderer renderer);
+
+		unsigned int GetVAO();
 		Texture GetTexture();
+
 		void GenerateSkyboxBuffers();
 		void GenerateCubeMapTexture();
-		unsigned int GetVAO();
+
 	private:
 		unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
 		unsigned int cubemapTexture;

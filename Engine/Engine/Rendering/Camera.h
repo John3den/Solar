@@ -7,28 +7,28 @@
 #include<glm/gtc/type_ptr.hpp>
 #include<glm/gtx/rotate_vector.hpp>
 #include<glm/gtx/vector_angle.hpp>
-
+#include "Renderer.h"
 #include"shaderClass.h"
 namespace Engine
 {
 	class Camera
 	{
 	public:
-		Camera(int width, int height, glm::vec3 position, float FOV, float nearPlane, float farPlane);
-		void updateMatrix();
-		void Matrix(Shader& shader, const char* uniform);
-		void Inputs(GLFWwindow* window);
+		Camera(glm::vec3 position, float FOV, float nearPlane, float farPlane);
 
-		bool IsCursorHidden();
 		glm::vec3 GetOrientation();
 		glm::vec3 GetDirectionUp();
 		glm::vec3 GetPosition();
+
+		void updateMatrix();
+		void Matrix(Shader& shader, const char* uniform);
+		void Inputs(GLFWwindow* window);
+		bool IsCursorHidden();
+
 	private:
 		const float FOVdeg;
 		const float nearPlane;
 		const float farPlane;
-		const int width;
-		const int height;
 		const float defaultSpeed = 0.1f;
 		const float SprintSpeed = 0.4f;
 		float speed = defaultSpeed;

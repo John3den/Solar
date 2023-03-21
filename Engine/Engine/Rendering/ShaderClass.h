@@ -16,6 +16,7 @@ namespace Engine
 	{
 	public:
 		Shader(const char* vertexFile, const char* fragmentFile);
+
 		void Activate();
 		void Delete();
 
