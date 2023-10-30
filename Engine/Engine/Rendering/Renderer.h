@@ -9,6 +9,7 @@
 #include "UI.h"
 #include "Scene.h"
 #include "FailedToCreateWindowException.h"
+
 namespace Engine
 {
 	enum LightingMode { phongLighting, simpleLighting };

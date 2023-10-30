@@ -76,14 +76,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Exceptions;$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\OpenglClasses;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\UI</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Exceptions;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\OpenglClasses;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\UI</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Engine.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\JohnEden\Source\Repos\Solar\Libs\Engine;$(SolutionDir)Libs\lib-vc2022;$(SolutionDir)Libs\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)Libs\Engine;$(SolutionDir)Libs\lib-vc2022;$(SolutionDir)Libs\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

@@ -84,7 +84,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\Users\JohnEden\Source\Repos\Solar\Engine\Engine\Exceptions;$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\UI;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\OpenglClasses</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libs\include;$(SolutionDir)Engine\Engine;$(SolutionDir)Engine\Engine\Rendering;$(SolutionDir)Engine\Engine\UI;$(SolutionDir)Engine\Engine\Simulation;$(SolutionDir)Engine\Engine\Exceptions;$(SolutionDir)Engine\Engine\OpenglClasses</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
